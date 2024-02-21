@@ -16,11 +16,11 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
 
     })
     if (error) {
-        console.log('query error', error instanceof CustomError)
         if (error instanceof CustomError) {
 
             throw new CustomError(error.message, error.errors, error.statusCode)
         }
+        throw new Error(error.message)
     }
 
     return (
