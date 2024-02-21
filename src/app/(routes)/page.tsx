@@ -2,7 +2,7 @@
 import React from 'react'
 
 import Section from '@/components/wrapper/Section'
-import FreeKeyboards from '@/components/keyboard/FreeKeyboardsWrapper'
+import FreeKeyboardsWrapper from '@/entities/free/components/FreeKeyboardsWrapper'
 import { Suspense } from 'react'
 
 async function Home() {
@@ -17,7 +17,7 @@ async function Home() {
 
             <Section>
                 <Suspense fallback={<p>Loading...</p>}>
-                    <FreeKeyboards />
+                    <FreeKeyboardsWrapper />
                 </Suspense>
             </Section>
 

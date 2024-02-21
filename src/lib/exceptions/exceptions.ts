@@ -24,3 +24,14 @@ export class InternalError extends CustomError {
     Object.setPrototypeOf(this, InternalError.prototype);
   }
 }
+
+export class EntityNotFoundError extends CustomError {
+  constructor(
+    message: string = "Error fetching",
+    errors: { [key: string]: string } = {},
+    statusCode: number = 404
+  ) {
+    super(message, errors, statusCode);
+    Object.setPrototypeOf(this, InternalError.prototype);
+  }
+}

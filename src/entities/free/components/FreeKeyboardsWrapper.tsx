@@ -2,6 +2,7 @@
 import { Keyboard } from '@/types'
 import FreeKeyboards from "./FreeKeyboards";
 import { InternalError } from '@/lib/exceptions/exceptions';
+import { getFreeKeyboard } from '../api';
 
 const getFreeKeyboards = async () => {
 
@@ -16,11 +17,12 @@ const getFreeKeyboards = async () => {
 
         return data.keyboards
     } catch (error) {
-        throw new InternalError('Something went wrong')
+        throw new InternalError('Internal error')
     }
 
 }
 export default async function FreeKeyboardsWrapper() {
     const keyboards = await getFreeKeyboards()
-    return <>{keyboards && <FreeKeyboards keyboards={keyboards} />}</>
+    const data = await getFreeKeyboard(keyboards[0].id)
+    return <>{keyboards && <FreeKeyboards keyboards={keyboards} keyboard={data?.keyboard} />}</>
 }
