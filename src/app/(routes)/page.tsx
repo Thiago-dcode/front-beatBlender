@@ -16,7 +16,7 @@ async function Home() {
             <h1>Beat Blender</h1>
 
             <Section>
-                <Suspense  fallback={<p>Loading...</p>}>
+                <Suspense fallback={<p>Loading...</p>}>
                     <FreeKeyboards />
                 </Suspense>
             </Section>

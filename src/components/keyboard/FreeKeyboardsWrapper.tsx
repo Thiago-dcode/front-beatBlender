@@ -16,7 +16,7 @@ const getFreeKeyboards = async () => {
 
         return data.keyboards
     } catch (error) {
-        throw new InternalError('Internal error')
+        throw new InternalError('Something went wrong')
     }
 
 }
