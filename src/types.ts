@@ -9,13 +9,15 @@ export interface Keyboard {
   categories: category[];
 }
 
-export interface KeyboardWithKeys extends Keyboard {
+export interface KeyboardWithKeysAndDesign extends Keyboard {
   keys: key[];
+  design: DesignKeyboard
 }
 
 export interface key {
   id: number;
-  letter: string;
+  key: string;
+  displayName: string;
   createdAt: string;
   updatedAt: string;
   userId: number;
@@ -25,6 +27,18 @@ export interface key {
   sound: Sound;
 }
 
+export interface DesignKeyboard {
+  id: number;
+  name: string;
+  path: string;
+  designUrl: string;
+  isPremium:false;
+}
+export enum KeySize {
+  "sm" = 2,
+  "md" = 4,
+  "xl" = 7,
+}
 export interface Sound {
   id: number;
   name: string;

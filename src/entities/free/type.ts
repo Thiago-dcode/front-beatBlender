@@ -1,7 +1,7 @@
-import { KeyboardWithKeys } from "@/types";
+import { KeyboardWithKeysAndDesign } from "@/types";
 
 export type Data =
   | {
-      keyboard: KeyboardWithKeys;
+      keyboard: KeyboardWithKeysAndDesign;
     }
   | undefined;

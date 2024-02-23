@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Main from "@/components/wrapper/Main";
 import { redirect } from "next/navigation";
+import Section from "@/components/wrapper/Section";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,8 +21,11 @@ export default async function publicLayout({
   return (
     <>
       <header>{
-        loggedIn ? <nav>Logged in  nav</nav> : <nav>Logged out  nav</nav>
-
+        <Section style={{
+          padding: '1rem 2.5rem'
+        }}>
+          {loggedIn ? <nav>Logged in  nav</nav> : <nav>Logged out  nav</nav>}
+        </Section>
       }</header>
       <Main>{children}</Main>
     </>
