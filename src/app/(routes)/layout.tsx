@@ -20,14 +20,19 @@ export default async function publicLayout({
 
   return (
     <>
-      <header>{
-        <Section style={{
-          padding: '1rem 2.5rem'
+      <header className="sticky z-50 top-0 ">{
+        <Section className="bg-black" style={{
+          padding: '1rem 2.5rem',
         }}>
-          {loggedIn ? <nav>Logged in  nav</nav> : <nav>Logged out  nav</nav>}
+          {loggedIn ? <nav>Logged in  nav</nav> : <nav className=" text-white">Logged out  nav</nav>}
         </Section>
       }</header>
       <Main>{children}</Main>
+
+
+      <footer>
+        <Section> this is the footer</Section>
+      </footer>
     </>
   );
 }

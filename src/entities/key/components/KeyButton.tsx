@@ -10,11 +10,26 @@ import '@/entities/key/style.css'
 export default function KeyButton({ _key, size = KeySize.xl }: { _key: key, size?: KeySize }) {
 
     const [audio, setAudio] = useState<HTMLAudioElement>()
-
+    const [render, setRender] = useState(false)
     useEffect(() => {
 
         setAudio(new Audio(_key.sound.soundUrl))
     }, [_key])
+
+    useEffect(() => {
+
+        if (!audio || !render) return
+
+        audio.play()
+
+        return () => {
+            if (render) audio.pause()
+
+
+
+
+        }
+    }, [audio, render])
 
     return (<>
         <div style={
@@ -25,15 +40,9 @@ export default function KeyButton({ _key, size = KeySize.xl }: { _key: key, size
         } className={` button-key-div flex flex-col justify-center `} id={`div-${_key.key}`}>
             {audio &&
                 <Button variant={'disable'} id={`key-${_key.key}`} className='key-button' onClick={() => {
+                    if (!render) setRender(true)
 
-
-                    if (audio.paused) {
-                        audio.play();
-                    } else {
-                        audio.currentTime = 0
-                        audio.play();
-                    }
-
+                    setAudio(new Audio(_key.sound.soundUrl))
                 }} key={_key.id}>{_key.displayName}</Button>
             }
         </div>

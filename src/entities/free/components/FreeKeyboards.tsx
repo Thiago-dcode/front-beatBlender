@@ -1,20 +1,29 @@
 'use client'
 import { KeySize, Keyboard as KeyboardType, KeyboardWithKeysAndDesign } from '@/types'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Keyboard from '@/entities/keyboard/components/keyboard'
 import { CustomError } from '@/lib/exceptions/exceptions'
 import { useGetFreeKeyboard } from '../hooks/useGetFreeKeyboard'
 import { Button } from '@/components/ui/button'
 
-export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: KeyboardType[], keyboard: KeyboardWithKeysAndDesign | undefined }) {
+export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: KeyboardType[], keyboard: KeyboardWithKeysAndDesign }) {
 
-    const [keyboardId, setKeyboardId] = useState<number>(keyboards[0].id)
+    const [keyboardId, setKeyboardId] = useState<number>(keyboard?.id)
+    const [enable, setEnable] = useState<boolean>(false)
+    const [stale, setStale] = useState(0)
     const { data, isPending, error } = useGetFreeKeyboard({
         id: keyboardId,
-        initialData: keyboard ? { keyboard } : undefined
+        enable,
+        initialData: keyboard ? { keyboard } : undefined,
+        stale
 
 
     })
+    useEffect(()=>{
+
+        setEnable(false)
+        setStale(0)
+    },[])
     if (error) {
         if (error instanceof CustomError) {
 
@@ -45,6 +54,8 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
                             }
                         } className=' text-xs px-2 py-1' size={"disable"} key={_keyboard.id} onClick={() => {
                             setKeyboardId(_keyboard.id)
+                            setEnable(true)
+                            
                         }} > {_keyboard.name}</Button>
                     )
                 })}
