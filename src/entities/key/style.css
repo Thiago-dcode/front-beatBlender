@@ -19,3 +19,10 @@
   transition: all 0.2s;
   transform: scale(90%);
 }
+
+.button-key-clicked-loop {
+  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  transform: scale(90%);
+}
+

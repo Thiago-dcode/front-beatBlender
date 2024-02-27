@@ -11,7 +11,7 @@ export interface Keyboard {
 
 export interface KeyboardWithKeysAndDesign extends Keyboard {
   keys: key[];
-  design: DesignKeyboard
+  design: DesignKeyboard;
 }
 
 export interface key {
@@ -25,14 +25,36 @@ export interface key {
   categories: category[];
   soundId: number | null;
   sound: Sound;
+  effects: Effect[];
 }
 
+export type Effect = LoopEffect | VolumeEffect;
+export interface LoopEffect {
+  id: number;
+  name: "loop";
+  description: string;
+  isActive: boolean;
+  isPremium: boolean;
+  config: {
+    bpm: number;
+  };
+}
+export interface VolumeEffect {
+  id: number;
+  name: "volume";
+  description: string;
+  isActive: boolean;
+  isPremium: boolean;
+  config: {
+    level: number;
+  };
+}
 export interface DesignKeyboard {
   id: number;
   name: string;
   path: string;
   designUrl: string;
-  isPremium:false;
+  isPremium: false;
 }
 export enum KeySize {
   "sm" = 2,

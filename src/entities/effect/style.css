@@ -1,0 +1,22 @@
+@keyframes loopAnimation {
+  0% {
+    transform: scale(1) rotate(0deg); /* Normal state */
+  }
+  25% {
+    transform: scale(1) rotate(90deg); /* Scaled state */
+  }
+  50% {
+    transform: scale(1) rotate(180deg); /* Scaled state */
+  }
+  75% {
+    transform: scale(1) rotate(250deg); /* Scaled state */
+  }
+  100% {
+    transform: scale(1) rotate(360deg); /* Back to normal state */
+  }
+}
+
+.loop {
+    background-color: rgba(255, 0, 0, 0.5);
+  animation: loopAnimation 1s infinite; /* Run the animation indefinitely */
+}

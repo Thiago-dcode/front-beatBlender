@@ -1,13 +1,26 @@
+import { LoopEffect, key } from "@/types";
+
 export default class SoundHandler {
   private readonly audio: HTMLAudioElement;
   private audioRunning: boolean = false;
-  private looping = true;
-  constructor(audioUrl: string) {
-    this.audio = new Audio(audioUrl);
+  private keyElement: HTMLElement | null = null;
+  constructor(private key: key) {
+    this.audio = new Audio();
+
     this.play = this.play.bind(this);
     this.pause = this.pause.bind(this);
     this.keyDown = this.keyDown.bind(this);
     this.keyUp = this.keyUp.bind(this);
+  }
+
+  init() {
+    this.audio.src = this.key.sound.soundUrl;
+    return new Promise((resolve, reject) => {
+      this.audio.addEventListener("canplaythrough", () => {
+        this.keyElement = document.getElementById(`div-${this.key.key}`);
+        resolve(true);
+      });
+    });
   }
 
   play() {
@@ -20,27 +33,48 @@ export default class SoundHandler {
   }
   pause() {
     this.audio.pause();
+    this.audio.currentTime = 0;
+  }
+  loop(effect: LoopEffect) {
+    if (this.audio.loop) {
+      this.pause();
+      this.audio.loop = false;
+      document
+        .getElementById(`loop-effect-${effect.id}`)
+        ?.classList.remove("loop");
+      return;
+    }
+
+    this.play();
+    this.audio.loop = true;
+    document.getElementById(`loop-effect-${effect.id}`)?.classList.add("loop");
   }
 
-  keyDown(effect: string = "") {
+  keyDown() {
+    this.keyElement?.classList.add("button-key-clicked");
     if (this.audioRunning) return;
-    switch (effect) {
-      case "loop":
-        this.audio.addEventListener("ended", () => {
-          this.looping ? this.pause() : this.play();
-        });
 
-        this.looping = !this.looping;
-        if (!this.looping) this.play();
-        break;
-      default:
-        this.play();
+    this.key.effects.forEach((effect) => {
+      const { name } = effect;
+      switch (name) {
+        case "loop":
+          effect.isActive ? this.loop(effect) : this.play();
 
-        break;
-    }
+          break;
+        case "volume":
+          this.audio.volume = effect.config.level;
+
+        default:
+          this.play();
+
+          break;
+      }
+    });
+
     this.audioRunning = true;
   }
   keyUp() {
+    this.keyElement?.classList.remove("button-key-clicked");
     this.audioRunning = false;
   }
 }

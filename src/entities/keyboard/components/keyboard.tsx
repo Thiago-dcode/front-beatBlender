@@ -8,25 +8,15 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
 
     const [soundHandlers, setSoundHandlers] = useState<{ [key: string]: SoundHandler }>()
 
-    const pauseAllAudios = useCallback(() => {
-        let paused = false
-        if (!soundHandlers || paused) return;
-
-        keyboard.keys.forEach(key => {
-            soundHandlers[key.key].pause();
-        });
-        paused = true
-
-    }, [soundHandlers, keyboard]);
 
     useEffect(() => {
-
+        console.log('KEYBOARD:', keyboard)
         const _soundHandlers = keyboard.keys.reduce<{ [key: string]: SoundHandler }>((acc, curr) => {
             const { key, sound } = curr;
-            acc[key] = new SoundHandler(sound.soundUrl);
+            acc[key] = new SoundHandler(curr);
             return acc;
         }, {});
-
+        console.log(_soundHandlers)
         setSoundHandlers(_soundHandlers)
 
     }, [keyboard])
@@ -38,21 +28,18 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
         let eventIsRunning = false
         if (!enableKeyDown || eventIsRunning) return
         const eventOnKeyDown = (e: globalThis.KeyboardEvent) => {
+
             if (!soundHandlers[e.key]) return
             eventIsRunning = true
             const key = e.key
-            const div = document.getElementById(`div-${key}`);
-            soundHandlers[e.key].keyDown()
-            div?.classList.add("button-key-clicked");
+
+            soundHandlers[key].keyDown()
+
 
         };
         const eventOnKeyUp = (e: globalThis.KeyboardEvent) => {
             const key = e.key
             if (!soundHandlers[key]) return
-            const div = document.getElementById(`div-${key}`);
-
-            div?.classList.remove("button-key-clicked");
-
             soundHandlers[key].keyUp()
 
         }
@@ -60,7 +47,7 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
         document.addEventListener('keydown', eventOnKeyDown)
         document.addEventListener('keyup', eventOnKeyUp)
         return () => {
-            pauseAllAudios()
+
             document.removeEventListener('keydown', eventOnKeyDown)
             document.removeEventListener('keyup', eventOnKeyUp)
 
