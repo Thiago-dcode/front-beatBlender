@@ -33,6 +33,7 @@ export default function KeyButton({ _key, size = KeySize.xl, soundHandler }: { _
     return (<>
         <div style={
             {
+                background: _key.bgColor || '',
                 width: `${size}rem`,
                 height: `${size}rem`
             }
@@ -40,13 +41,15 @@ export default function KeyButton({ _key, size = KeySize.xl, soundHandler }: { _
             {ready && soundHandler &&
                 <>
                     <Effects effects={_key.effects} />
-                    <Button variant={'disable'} id={`key-${_key.key}`} className='key-button' onClick={() => {
+                    <Button style={{
+                        color: _key.keyColor || '',
+                    }} variant={'disable'} id={`key-${_key.key}`} className='key-button' onClick={() => {
                         soundHandler.keyDown()
                         soundHandler.keyUp()
                     }} key={_key.id}>
 
 
-                        {_key.displayName}
+                        {_key.displayName.toUpperCase()}
 
 
                     </Button>

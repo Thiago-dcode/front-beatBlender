@@ -8,12 +8,26 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
 
     const [soundHandlers, setSoundHandlers] = useState<{ [key: string]: SoundHandler }>()
 
+    const stopAll = useCallback(() => {
+
+        if (!soundHandlers) return
+
+        keyboard.keys.forEach(key => {
+            const soundHandler = soundHandlers[key.key.toLowerCase()]
+            if (soundHandler) {
+
+                soundHandler.pause()
+            }
+        })
+
+
+    }, [keyboard.keys, soundHandlers])
 
     useEffect(() => {
         console.log('KEYBOARD:', keyboard)
         const _soundHandlers = keyboard.keys.reduce<{ [key: string]: SoundHandler }>((acc, curr) => {
             const { key, sound } = curr;
-            acc[key] = new SoundHandler(curr);
+            acc[key.toLowerCase()] = new SoundHandler(curr);
             return acc;
         }, {});
         console.log(_soundHandlers)
@@ -28,17 +42,17 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
         let eventIsRunning = false
         if (!enableKeyDown || eventIsRunning) return
         const eventOnKeyDown = (e: globalThis.KeyboardEvent) => {
-
-            if (!soundHandlers[e.key]) return
+            const key = e.key.toLowerCase()
+            if (!soundHandlers[key]) return
             eventIsRunning = true
-            const key = e.key
+
 
             soundHandlers[key].keyDown()
 
 
         };
         const eventOnKeyUp = (e: globalThis.KeyboardEvent) => {
-            const key = e.key
+            const key = e.key.toLowerCase()
             if (!soundHandlers[key]) return
             soundHandlers[key].keyUp()
 
@@ -50,6 +64,7 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
 
             document.removeEventListener('keydown', eventOnKeyDown)
             document.removeEventListener('keyup', eventOnKeyUp)
+            stopAll()
 
         }
     }, [soundHandlers, enableKeyDown])

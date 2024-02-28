@@ -17,6 +17,8 @@ export interface KeyboardWithKeysAndDesign extends Keyboard {
 export interface key {
   id: number;
   key: string;
+  bgColor?: string;
+  keyColor?: string;
   displayName: string;
   createdAt: string;
   updatedAt: string;

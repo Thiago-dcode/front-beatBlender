@@ -1,9 +1,12 @@
 import { LoopEffect, key } from "@/types";
+import { setInterval } from "timers";
 
 export default class SoundHandler {
   private readonly audio: HTMLAudioElement;
   private audioRunning: boolean = false;
   private keyElement: HTMLElement | null = null;
+  private intervalId: ReturnType<typeof globalThis.setTimeout> | undefined =
+    undefined;
   constructor(private key: key) {
     this.audio = new Audio();
 
@@ -34,20 +37,32 @@ export default class SoundHandler {
   pause() {
     this.audio.pause();
     this.audio.currentTime = 0;
+    this.audio.loop = false;
+    globalThis.clearInterval(this.intervalId);
+    this.intervalId = undefined;
   }
   loop(effect: LoopEffect) {
-    if (this.audio.loop) {
+    const { bpm } = effect.config;
+
+    console.log("BPM", bpm);
+    if (this.audio.loop || this.intervalId) {
       this.pause();
-      this.audio.loop = false;
       document
         .getElementById(`loop-effect-${effect.id}`)
         ?.classList.remove("loop");
       return;
     }
 
+    document.getElementById(`loop-effect-${effect.id}`)?.classList.add("loop");
+    if (bpm > 0) {
+      // handle bpm
+      //140 bpm: the beat will play 140 times in a minute
+      console.log("SHOULD ONLY BE PRINTED ONCE");
+      this.intervalId = globalThis.setInterval(this.play, 60000 / bpm);
+      return;
+    }
     this.play();
     this.audio.loop = true;
-    document.getElementById(`loop-effect-${effect.id}`)?.classList.add("loop");
   }
 
   keyDown() {
@@ -62,7 +77,10 @@ export default class SoundHandler {
 
           break;
         case "volume":
-          this.audio.volume = effect.config.level;
+          this.audio.volume =
+            effect.config.level >= 0 && effect.config.level <= 1
+              ? effect.config.level
+              : 1;
 
         default:
           this.play();
