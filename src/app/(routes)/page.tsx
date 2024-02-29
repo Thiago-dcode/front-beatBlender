@@ -26,7 +26,7 @@ async function Home() {
 
                 <Section>
 
-                    <div className='text-white'>
+                    <div className=''>
                         <h2 className='text-4xl'>Want to BLENDER your own keyboards?</h2>
                         <Link href={'/register'}> Start here </Link>
                     </div>
