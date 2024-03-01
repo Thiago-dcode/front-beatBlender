@@ -6,35 +6,33 @@ import { Button } from '@/components/ui/button'
 import { FormValidateType } from '@/entities/auth/validate'
 import { useEffect, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { CustomError } from '@/lib/exceptions/exceptions'
+import axios from '@/lib/config/axios'
+import { AxiosError } from 'axios'
+import { fetchClient } from '@/lib/core/httpClient'
 
 
 export default function Register() {
-  const [dataToSubmit, setDataToSubmit] = useState<FormValidateType>()
   const form = useRegisterForm()
   const { errors } = form.formState
   // implement REACT QUERY
   const mutation = useMutation({
-    mutationFn: async (formData: FormValidateType) => {
+    mutationFn: (formData: FormValidateType) => {
 
-      const result = await fetch(`${process.env.NEXT_PUBLIC_HOST}/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      return fetchClient.post('/users', formData)
 
     },
     onSuccess(data, variables, context) {
-      console.log(data)
+      console.log('data', data)
     },
     onError(error, variables, context) {
       //TODO: handle error
-      console.log('ERROR', error)
+      if (error instanceof AxiosError) {
+        console.log('AXIOS ERROR', error.response)
+      }
       form.setError('email', { message: 'some email error' })
     },
   })
+
   const handleSubmit = (values: FormValidateType) => {
     //this will only run when the form is validadted
     mutation.mutate(values)

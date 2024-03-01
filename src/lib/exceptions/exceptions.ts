@@ -35,3 +35,13 @@ export class EntityNotFoundError extends CustomError {
     Object.setPrototypeOf(this, InternalError.prototype);
   }
 }
+export class HttpClientError extends CustomError {
+  constructor(
+    message: string = "Error HttpClientError",
+    errors: { [key: string]: string } = {},
+    statusCode: number = 500
+  ) {
+    super(message, errors, statusCode);
+    Object.setPrototypeOf(this, HttpClientError.prototype);
+  }
+}
