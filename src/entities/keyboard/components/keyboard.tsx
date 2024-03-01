@@ -39,22 +39,20 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
     useEffect(() => {
 
         if (!soundHandlers) return
-        let eventIsRunning = false
-        if (!enableKeyDown || eventIsRunning) return
+        if (!enableKeyDown) return
         const eventOnKeyDown = (e: globalThis.KeyboardEvent) => {
-            const key = e.key.toLowerCase()
-            if (!soundHandlers[key]) return
-            eventIsRunning = true
+            const soundHandler = soundHandlers[e.key.toLowerCase()]
+            if (!soundHandler || !soundHandler.canplay) return
 
-
-            soundHandlers[key].keyDown()
+            soundHandler.keyDown()
 
 
         };
         const eventOnKeyUp = (e: globalThis.KeyboardEvent) => {
-            const key = e.key.toLowerCase()
-            if (!soundHandlers[key]) return
-            soundHandlers[key].keyUp()
+            const soundHandler = soundHandlers[e.key.toLowerCase()]
+            if (!soundHandler) return
+            if (!soundHandler || !soundHandler.canplay) return
+            soundHandler.keyUp()
 
         }
 
