@@ -8,22 +8,22 @@ import { Button } from '@/components/ui/button'
 
 export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: KeyboardType[], keyboard: KeyboardWithKeysAndDesign }) {
 
-    const [keyboardId, setKeyboardId] = useState<number>(keyboard?.id)
+    const [keyboardName, setKeyboardName] = useState<string>(keyboard?.name)
     const [enable, setEnable] = useState<boolean>(false)
     const [stale, setStale] = useState(0)
     const { data, isPending, error } = useGetFreeKeyboard({
-        id: keyboardId,
+        name: keyboardName,
         enable,
         initialData: keyboard ? { keyboard } : undefined,
         stale
 
 
     })
-    useEffect(()=>{
+    useEffect(() => {
 
         setEnable(false)
         setStale(0)
-    },[])
+    }, [])
     if (error) {
         if (error instanceof CustomError) {
 
@@ -53,9 +53,9 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
                                 background: _keyboard.id === data?.keyboard?.id ? 'black' : 'gray'
                             }
                         } className=' text-xs px-2 py-1' size={"disable"} key={_keyboard.id} onClick={() => {
-                            setKeyboardId(_keyboard.id)
+                            setKeyboardName(_keyboard.name)
                             setEnable(true)
-                            
+
                         }} > {_keyboard.name}</Button>
                     )
                 })}

@@ -5,7 +5,6 @@ import EffectIcon from './effectIcon'
 import '../style.css'
 function Effects({ effects }: {
 
-
     effects: Effect[]
 }) {
 

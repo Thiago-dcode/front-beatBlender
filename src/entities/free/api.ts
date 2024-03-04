@@ -4,9 +4,9 @@ import {
 } from "@/lib/exceptions/exceptions";
 import { Data } from "./type";
 import { Keyboard } from "@/types";
-export const getFreeKeyboard = async (id: number) => {
+export const getFreeKeyboard = async (name: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_HOST}/free/keyboards/${id}`
+    `${process.env.NEXT_PUBLIC_HOST}/free/keyboards/${name}`
   );
   if (!res.ok) {
     console.log(res);
