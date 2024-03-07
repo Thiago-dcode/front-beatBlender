@@ -1,25 +1,49 @@
+
 import { HttpClientError } from "../exceptions/exceptions";
 
 class HttpClient {
+  private defaultHeaders: HeadersInit = {
+    "Content-Type": "application/json",
+    credentials: "include",
+  };
+  private defaultOptions: RequestInit = {
+    headers: this.defaultHeaders,
+  };
   constructor(
     public baseUrl: string | undefined,
-    readonly defaultOptions: RequestInit = {}
-  ) {}
+    defaultOptions: RequestInit = {}
+  ) {
+    this.setDefaultOptions(defaultOptions);
+  }
 
+  setHeaders(headers: HeadersInit) {
+    this.defaultHeaders = {
+      ...this.defaultHeaders,
+      ...headers,
+    };
+    this.setDefaultOptions({
+      headers: this.defaultHeaders,
+    });
+  }
+  setDefaultOptions(options: RequestInit) {
+    this.defaultOptions = {
+      ...this.defaultOptions,
+      ...options,
+    };
+  }
   fetch(resource: string, options: RequestInit = {}) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<any>(async (resolve, reject) => {
       try {
         const res = await fetch(this.getUrl(resource), {
           ...this.defaultOptions,
           ...options,
         });
-        let data: any;
+        let data;
         try {
           data = await res.json();
         } catch (error) {
           data = undefined;
         }
-
         if (!res.ok) {
           console.log("RESPONSE", res);
           reject(
@@ -78,11 +102,8 @@ class HttpClient {
 }
 const defaultHeader = {
   "Content-Type": "application/json",
+  Authorization: `Bearer {token}`,
 };
-export const fetchClient = new HttpClient(process.env.NEXT_PUBLIC_HOST, {
-  headers: defaultHeader,
-});
+export const fetchFromClient = new HttpClient(process.env.NEXT_PUBLIC_API_URL);
 
-export const fetchServer = new HttpClient(process.env.HOST, {
-  headers: defaultHeader,
-});
+export const fetchFromServer = new HttpClient(process.env.API_URL);

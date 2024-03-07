@@ -19,8 +19,8 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
 
 
     })
-    useEffect(() => {
 
+    useEffect(() => {
         setEnable(false)
         setStale(0)
     }, [])
@@ -29,7 +29,7 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
 
             throw new CustomError(error.message, error.errors, error.statusCode)
         }
-        throw new Error(error.message)
+
     }
 
     return (

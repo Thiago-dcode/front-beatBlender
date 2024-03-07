@@ -12,11 +12,8 @@ async function Home() {
 
     return (
         <div className='flex  flex-col gap-2'>
-            <Section style={
-                { background: 'rgba(0,0,0,0.8)' }
-            }><h1 className='text-7xl text-white'>BEAT BLENDER</h1></Section>
+            <Section ><h1 className='text-2xl text-white'>BEAT BLENDER</h1></Section>
             <Section style={{
-                border: '2px solid black'
             }} flex='col'>
                 <Section>
                     <Suspense fallback={<p>Loading...</p>}>

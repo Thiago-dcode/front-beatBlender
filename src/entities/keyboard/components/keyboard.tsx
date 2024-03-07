@@ -3,6 +3,7 @@ import KeyButton from '@/entities/key/components/KeyButton'
 import SoundHandler from '@/lib/core/soundHandler'
 import { KeySize, KeyboardWithKeysAndDesign } from '@/types'
 import React, { useCallback, useEffect, useState } from 'react'
+import '../style.css'
 
 export default function Keyboard({ keyboard, enableKeyDown = true, keySize = KeySize.xl, displayName = true }: { keyboard: KeyboardWithKeysAndDesign, enableKeyDown?: boolean, keySize?: KeySize, displayName?: boolean }) {
 

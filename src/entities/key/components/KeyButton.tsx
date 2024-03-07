@@ -40,7 +40,7 @@ export default function KeyButton({ _key, size = KeySize.xl, soundHandler, enabl
         } className={` relative button-key-div flex flex-col justify-center `} id={`div-${_key.key}`}>
             {ready && soundHandler &&
                 <>
-                    {size !== KeySize.sm  && <Effects effects={_key.effects} />}
+                    {size !== KeySize.sm && <Effects effects={_key.effects} />}
                     <Button style={{
                         color: _key.keyColor || '',
                     }} variant={'disable'} id={`key-${_key.key}`} className='key-button' onClick={() => {

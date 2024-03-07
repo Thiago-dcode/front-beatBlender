@@ -1,0 +1,21 @@
+.keyboard-design-minimal {
+}
+.keyboard-design-retro .keyboard-title {
+  /* background-color: rgba(0, 0, 0, 0.6); */
+
+  color: white;
+  padding: 0 0.5rem;
+  border-radius: 2;
+}
+.keyboard-design-retro .keyboard {
+  padding: 1rem 0.2rem !important;
+
+  /* box-shadow: 4px 5px 7px 1px rgba(0, 0, 0, 0.5); */
+  /* background-color: rgba(255, 255, 255, 1); */
+}
+.keyboard-design-retro .button-key-div {
+  background-color: rgb(38 38 38);
+}
+.keyboard-design-retro .button-key-div button {
+  color: white;
+}

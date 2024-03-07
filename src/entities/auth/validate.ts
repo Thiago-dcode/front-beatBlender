@@ -1,5 +1,5 @@
 import * as z from "zod";
-export const formSchema = z
+export const formRegisterSchema = z
   .object({
     email: z.string().email(),
     username: z.string().min(5),
@@ -15,5 +15,10 @@ export const formSchema = z
       path: ["passwordConfirm"],
     }
   );
+export type FormRegisterValidateType = z.infer<typeof formRegisterSchema>;
+export const formLoginSchema = z.object({
+  username: z.string(),
+  password: z.string(),
+});
 
-export type FormValidateType = z.infer<typeof formSchema>;
+export type FormLoginValidateType = z.infer<typeof formLoginSchema>;

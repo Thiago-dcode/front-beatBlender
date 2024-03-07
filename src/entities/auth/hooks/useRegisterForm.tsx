@@ -1,8 +1,8 @@
 
 import { useForm } from 'react-hook-form'
-import { FormValidateType } from '../validate'
+import { FormRegisterValidateType } from '../validate'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { formSchema } from '../validate'
+import { formRegisterSchema } from '../validate'
 
 const defaultValues = {
     email: '',
@@ -12,8 +12,8 @@ const defaultValues = {
 }
 export function useRegisterForm() {
 
-    return useForm<FormValidateType>({
-        resolver: zodResolver(formSchema),
+    return useForm<FormRegisterValidateType>({
+        resolver: zodResolver(formRegisterSchema),
         defaultValues
     })
 }
