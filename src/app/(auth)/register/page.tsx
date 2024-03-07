@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import React from 'react'
-import { Button } from '@/components/ui/button'
-=======
 'use client'
 import { useRegisterForm, isFormValue } from '@/entities/auth/hooks/useRegisterForm'
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormControl } from '@/components/ui/form'
@@ -21,7 +17,6 @@ import { useEffect, useState } from 'react'
 import UseTimer from '@/lib/hooks/UseTimer'
 import FormSuccess from '@/components/form/formSuccess'
 
->>>>>>> register
 export default function Register() {
   const router = useRouter()
   const { timer, start } = UseTimer()
@@ -99,26 +94,7 @@ export default function Register() {
 
   }, [isSuccess, timer, router])
   return (
-<<<<<<< HEAD
-    <form className='flex flex-col items-center justify-center w-full h-screen' action="">
-
-      <div>
-        <label htmlFor="username">Username</label>
-        <input type="text" name="username" id="username" />
-      </div>
-
-      <div >
-        <label htmlFor="email">Email</label>
-        <input type="email" name="email" id="email" />
-      </div>
-
-      <div >
-        <label htmlFor="password">Passowrd</label>
-        <input type="password" name="password" id="password" />
-      </div>
-      <Button type='submit'>Submit</Button>
-    </form>
-=======
+  
 
     <div className='-mt-20 flex items-center justify-center h-full w-full flex-col'>
       {!isSuccess && <>
@@ -175,6 +151,5 @@ export default function Register() {
 
       {isSuccess && <FormSuccess timer={timer} timerBrake={2} message='Successfully register' />}
     </div>
->>>>>>> register
   )
 }

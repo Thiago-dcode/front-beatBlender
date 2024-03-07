@@ -16,11 +16,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-<<<<<<< HEAD
-      <body className={`${roboto_mono.className}flex flex-col items-center justify-center w-full`}><Provider> {children}</Provider></body>
-=======
+    
       <body className={`${roboto_mono.className}  bg-app-background flex flex-col items-center justify-center w-full`}><Provider> {children} </Provider></body>
->>>>>>> register
     </html>
   );
 }
