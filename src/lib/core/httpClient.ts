@@ -45,7 +45,7 @@ class HttpClient {
           data = undefined;
         }
         if (!res.ok) {
-          console.log("RESPONSE", res);
+          // console.log("RESPONSE", res);
           reject(
             new HttpClientError(
               data?.message || res.statusText,

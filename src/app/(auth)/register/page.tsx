@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import UseTimer from '@/lib/hooks/UseTimer'
 import FormSuccess from '@/components/form/formSuccess'
+import LinkComponent from '@/components/ui/link'
 
 export default function Register() {
   const router = useRouter()
@@ -94,7 +95,7 @@ export default function Register() {
 
   }, [isSuccess, timer, router])
   return (
-  
+
 
     <div className='-mt-20 flex items-center justify-center h-full w-full flex-col'>
       {!isSuccess && <>
@@ -145,7 +146,7 @@ export default function Register() {
               <ErrorText fontSize={FontSize.md} message={`${errors['root']?.message || ' '}`} />
             </div>
           </form>
-
+          <LinkComponent message="Already have an account?" linkMessage='Login.' route='/login' />
         </Form>
       </>}
 

@@ -20,13 +20,9 @@ export default async function publicLayout({
   //await for the session
 
   const session = await getServerSession(authOptions)
-
-  if (session) {
+if (session) {
     redirect('/')
-  } else {
-    console.log('YOU ARE NOOT LOGGED IN!!')
   }
-
   return (
     <>
       <Main>{children}</Main>

@@ -1,9 +1,14 @@
 'use client'
-
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 function LogOut() {
+    const { data, status } = useSession()
+
+    useEffect(() => {
+        console.log('CLIENT SESSION', data, status)
+
+    }, [data, status])
     return (
         <div>
             <Button onClick={async () => {

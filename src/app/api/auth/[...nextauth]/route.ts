@@ -1,13 +1,11 @@
 import { fetchFromServer } from "@/lib/core/httpClient";
+import { UserWithToken } from "@/types";
 import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET,
-  session: {
-    strategy: "jwt",
-  },
   pages: {
     signIn: "/login",
   },
@@ -18,24 +16,43 @@ export const authOptions: NextAuthOptions = {
         password: {},
       },
       async authorize(credentials, req) {
-        //
-        console.log(credentials);
-
-        const result = await fetchFromServer.post("auth/login", {
+        const result: UserWithToken = await fetchFromServer.post("auth/login", {
           username: credentials?.username,
           password: credentials?.password,
         });
-        console.log(result);
-        return result;
+        const { email, avatar, id, username } = result.user;
+        const jwt = result.accessToken;
+        return {
+          email,
+          avatar,
+          id,
+          username,
+          jwt,
+        };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        const { username, email, id, jwt,avatar } = user;
+        return { ...token, username, email, id, jwt,avatar };
       }
       return token;
+    },
+    async session({ session, token }) {
+      const { email, jwt, username, name ,avatar} = token;
+    return {
+        ...session,
+        user: {
+          id: session.user.id,
+          email,
+          jwt,
+          username,
+          name,
+          avatar
+        },
+      };
     },
   },
 };

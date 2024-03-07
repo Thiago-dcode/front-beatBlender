@@ -9,6 +9,7 @@ import { ErrorText, FontSize } from '@/components/form/formError'
 import Keyboard from '@/entities/keyboard/components/keyboard'
 import { useGetFreeKeyboard } from '@/entities/free/hooks/useGetFreeKeyboard'
 import { KeySize } from '@/types'
+import LinkComponent from '@/components/ui/link'
 import { useRouter } from 'next/navigation'
 import UseTimer from '@/lib/hooks/UseTimer'
 
@@ -52,8 +53,7 @@ export default function Login() {
     }
   }
   useEffect(() => {
-    console.log(timer)
-    if (!isSuccess || timer < 2 || !username) return
+       if (!isSuccess || timer < 2 || !username) return
 
     router.push(`${username}`)
     router.refresh()
@@ -93,7 +93,8 @@ export default function Login() {
               <ErrorText fontSize={FontSize.md} message={`${errors['root']?.message || ' '}`} />
             </div>
           </form>
-
+       
+           <LinkComponent message="Don't have an account?" linkMessage='Create one.' route='/register'/>
         </Form>
       </>}
       {isSuccess && <FormSuccess timer={timer} timerBrake={2} message='Sucessfully loggedin' />}
