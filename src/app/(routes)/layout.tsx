@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Main from "@/components/wrapper/Main";
-import { redirect } from "next/navigation";
 import Section from "@/components/wrapper/Section";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import LogOut from "@/entities/auth/components/logOut";
+import Image from "next/image";
+import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,23 +20,26 @@ export default async function publicLayout({
   children: React.ReactNode;
 }) {
   //await for the session
-
+  const session = await getServerSession(authOptions)
 
   return (
     <>
-      <header className="sticky z-50 top-0 ">{
-        <Section className="bg-black" style={{
-          padding: '1rem 2.5rem',
+      <header className="sticky z-50 top-0  border-white">{
+        <Section  className="text-white flex items-center justify-between" style={{
+            padding: '0.5rem 2.5rem'
         }}>
-          {loggedIn ? <nav>Logged in  nav</nav> : <nav className=" text-white">Logged out  nav</nav>}
+
+          <Link href={'/'}>
+            <Image alt="logo" width={80} height={80} src={process.env.HOST + '/logo.png'}></Image>
+          </Link>
+          {session ? <nav><LogOut /></nav> : <nav className="">Logged out  nav</nav>}
+
         </Section>
       }</header>
       <Main>{children}</Main>
-
-
       <footer>
         <Section> this is the footer</Section>
       </footer>
-    </>
+    </> 
   );
 }

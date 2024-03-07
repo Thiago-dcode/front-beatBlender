@@ -1,35 +1,32 @@
-import { EntityNotFoundError, InternalError } from "@/lib/exceptions/exceptions";
+import {
+  EntityNotFoundError,
+  HttpClientError,
+  InternalError,
+} from "@/lib/exceptions/exceptions";
 import { Data } from "./type";
 import { Keyboard } from "@/types";
-export const getFreeKeyboard = async (id: number) => {
-  const res = await fetch(`http://localhost:8000/free/keyboards/${id}`);
-  if (!res.ok) {
-    console.log(res);
-    switch (res.status) {
-      case 404:
-        throw new EntityNotFoundError(`Free keyboard not found`);
-      default:
-    }
-    throw new Error("Free keyboard not found");
-  }
-  const data: Data = await res.json();
-
-  return data;
-};
- export const getFreeKeyboards = async () => {
-
+import { fetchFromClient } from "@/lib/core/httpClient";
+export const getFreeKeyboard = async (name: string) => {
   try {
-      const res = await fetch(`${process.env.HOST}/free/keyboards`)
-      if (!res.ok) {
-          throw new Error('Free keyboards not found')
-      }
-      const data: {
-          keyboards: Keyboard[]
-      } = await res.json()
-
-      return data.keyboards
+    const data: Data = await fetchFromClient.get(`/free/keyboards/${name}`);
+    return data;
   } catch (error) {
-      throw new InternalError('Internal error')
+    if (error instanceof HttpClientError)
+      throw new HttpClientError(error.message);
   }
+  throw new InternalError("Unexpected error fetching free keyboard: "+ name);
+};
+export const getFreeKeyboards = async () => {
+  try {
+    const data: {
+      keyboards: Keyboard[];
+    } = await fetchFromClient.get(`/free/keyboards`);
 
-}
+    return data.keyboards;
+  } catch (error) {
+    if (error instanceof HttpClientError)
+      throw new HttpClientError(error.message);
+
+    throw new InternalError("Unexpected error fetching free keyboards");
+  }
+};

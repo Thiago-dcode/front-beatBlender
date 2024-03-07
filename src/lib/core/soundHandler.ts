@@ -4,6 +4,7 @@ import { setInterval } from "timers";
 export default class SoundHandler {
   private readonly audio: HTMLAudioElement;
   private audioRunning: boolean = false;
+  canplay = false;
   private keyElement: HTMLElement | null = null;
   private intervalId: ReturnType<typeof globalThis.setTimeout> | undefined =
     undefined;
@@ -21,6 +22,7 @@ export default class SoundHandler {
     return new Promise((resolve, reject) => {
       this.audio.addEventListener("canplaythrough", () => {
         this.keyElement = document.getElementById(`div-${this.key.key}`);
+        this.canplay = true;
         resolve(true);
       });
     });

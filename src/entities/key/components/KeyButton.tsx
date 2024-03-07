@@ -10,7 +10,7 @@ import Effects from '@/entities/effect/components/effects'
 
 
 
-export default function KeyButton({ _key, size = KeySize.xl, soundHandler }: { _key: key, size?: KeySize, soundHandler: SoundHandler | undefined }) {
+export default function KeyButton({ _key, size = KeySize.xl, soundHandler, enableKeyDown }: { _key: key, size?: KeySize, soundHandler: SoundHandler | undefined, enableKeyDown: boolean }) {
 
     const [ready, setReady] = useState(false)
     useEffect(() => {
@@ -40,7 +40,7 @@ export default function KeyButton({ _key, size = KeySize.xl, soundHandler }: { _
         } className={` relative button-key-div flex flex-col justify-center `} id={`div-${_key.key}`}>
             {ready && soundHandler &&
                 <>
-                    <Effects effects={_key.effects} />
+                    {size !== KeySize.sm && <Effects effects={_key.effects} />}
                     <Button style={{
                         color: _key.keyColor || '',
                     }} variant={'disable'} id={`key-${_key.key}`} className='key-button' onClick={() => {
@@ -49,7 +49,10 @@ export default function KeyButton({ _key, size = KeySize.xl, soundHandler }: { _
                     }} key={_key.id}>
 
 
-                        {_key.displayName.toUpperCase()}
+                        {(_key.displayName.toLowerCase() !== _key.key.toLowerCase()) && enableKeyDown ? <div className='flex'>
+                            {_key.displayName.toUpperCase()}
+                            <span className='text-[0.5rem]'>{`(${_key.key})`}</span>
+                        </div> : _key.displayName.toUpperCase()}
 
 
                     </Button>

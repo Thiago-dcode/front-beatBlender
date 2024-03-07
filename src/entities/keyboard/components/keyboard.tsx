@@ -3,8 +3,9 @@ import KeyButton from '@/entities/key/components/KeyButton'
 import SoundHandler from '@/lib/core/soundHandler'
 import { KeySize, KeyboardWithKeysAndDesign } from '@/types'
 import React, { useCallback, useEffect, useState } from 'react'
+import '../style.css'
 
-export default function Keyboard({ keyboard, enableKeyDown = true, keySize = KeySize.xl }: { keyboard: KeyboardWithKeysAndDesign, enableKeyDown?: boolean, keySize?: KeySize }) {
+export default function Keyboard({ keyboard, enableKeyDown = true, keySize = KeySize.xl, displayName = true }: { keyboard: KeyboardWithKeysAndDesign, enableKeyDown?: boolean, keySize?: KeySize, displayName?: boolean }) {
 
     const [soundHandlers, setSoundHandlers] = useState<{ [key: string]: SoundHandler }>()
 
@@ -38,23 +39,20 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
 
     useEffect(() => {
 
-        if (!soundHandlers) return
-        let eventIsRunning = false
-        if (!enableKeyDown || eventIsRunning) return
+        if (!enableKeyDown || !soundHandlers) return
         const eventOnKeyDown = (e: globalThis.KeyboardEvent) => {
-            const key = e.key.toLowerCase()
-            if (!soundHandlers[key]) return
-            eventIsRunning = true
+            const soundHandler = soundHandlers[e.key.toLowerCase()]
+            if (!soundHandler || !soundHandler.canplay) return
 
-
-            soundHandlers[key].keyDown()
+            soundHandler.keyDown()
 
 
         };
         const eventOnKeyUp = (e: globalThis.KeyboardEvent) => {
-            const key = e.key.toLowerCase()
-            if (!soundHandlers[key]) return
-            soundHandlers[key].keyUp()
+            const soundHandler = soundHandlers[e.key.toLowerCase()]
+            if (!soundHandler) return
+            if (!soundHandler || !soundHandler.canplay) return
+            soundHandler.keyUp()
 
         }
 
@@ -73,12 +71,12 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
         <>
             <link rel="stylesheet" type="text/css" href={keyboard.design.designUrl} />
             < div className={`flex flex-col items-start gap-1 keyboard-design-${keyboard.design.name}`} >
-                <p className=' keyboard-title'>{keyboard.name}</p>
-                <div className='keyboard flex gap-3 flex-wrap  justify-center flex-grow py-6 px-2 m-auto max-w-3xl' id='keyboard'>
+                {displayName && <p className=' keyboard-title'>{keyboard.name}</p>}
+                <div className='keyboard flex gap-2 flex-wrap  justify-center flex-grow py-3 px-2 m-auto max-w-3xl' id='keyboard'>
                     {keyboard.keys.map(key => {
                         return (
 
-                            <KeyButton soundHandler={soundHandlers ? soundHandlers[key.key] : undefined} size={keySize} key={key.id} _key={key} />
+                            <KeyButton enableKeyDown={enableKeyDown} soundHandler={soundHandlers ? soundHandlers[key.key] : undefined} size={keySize} key={key.id} _key={key} />
                         )
                     })}
 

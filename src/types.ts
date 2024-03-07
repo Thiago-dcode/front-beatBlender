@@ -77,3 +77,26 @@ export interface category {
   name: string;
   userId: null | number;
 }
+
+export interface User {
+  avatar: string;
+  biography: null | string;
+  createdAt: string;
+  email: string;
+  id: number;
+  isActive: boolean;
+  name: null | string;
+  password: string;
+  token: string;
+  updatedAt: string;
+  username: string;
+}
+
+export interface UserWithToken {
+  user: User;
+  accessToken: string;
+}
+
+export interface AccessToken {
+  accessToken: string;
+}
