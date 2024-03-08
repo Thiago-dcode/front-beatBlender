@@ -27,8 +27,9 @@ const config = {
         mainBackground: "#09090B",
         foreground: "hsl(var(--foreground))",
         app: {
-          blueLink: '#289EF9',
-          greenPastel: "#579981",
+          blueLink: "#0074eb",
+          yellowCream: "#EFDC75",
+          greenPastel: "#4fbc9c",
           background: "#09090B",
           second_background: "#212529",
         },

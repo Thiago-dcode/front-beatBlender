@@ -11,7 +11,7 @@ function LinkComponent({ message = '', children, route, classname = '' }: props)
     return (
         <div className={'text-white flex items-center gap-2 ' + classname}>
             <p>{message}</p>
-            <Link className='font-bold text-app-blueLink' href={route}>{children}</Link>
+            <Link className='font-bold text-app-greenPastel' href={route}>{children}</Link>
         </div>
     )
 }

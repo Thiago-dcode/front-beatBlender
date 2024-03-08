@@ -23,7 +23,7 @@ function AuthNav({ username, avatar }: { username: string, avatar: string }) {
             <DropdownMenuTrigger asChild>
                 <AvatarComponent src={avatar} />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' color='white/50' className="px-2 bg-white">
+            <DropdownMenuContent align='end' color='white/50' className="px-2 bg-app-background text-white">
                 <DropdownMenuGroup>
                     <DropdownMenuItem className='w-full flex items-center'>
                         <Link className='w-full m-auto text-center' href={`/${username}`}>Profile</Link>

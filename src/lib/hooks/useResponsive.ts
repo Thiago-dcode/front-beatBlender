@@ -1,32 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 function useResponsive() {
-
-  const checkDevice = () => ({
-    isPhone: globalThis.innerWidth <= 768,
-    isTablet: globalThis.innerWidth > 768 && globalThis.innerWidth <= 1024,
-    isDesktop: globalThis.innerWidth > 1024,
-  });
+  const checkDevice = useCallback(
+    () => ({
+      isPhone: globalThis.innerWidth <= 480,
+      isTablet: globalThis.innerWidth > 480 && globalThis.innerWidth <= 768,
+      isDesktop: globalThis.innerWidth > 769 && globalThis.innerWidth <= 1200,
+      isTv: globalThis.innerWidth > 1200,
+    }),
+    []
+  );
 
   const [device, setDevice] = useState(checkDevice);
 
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     setDevice(checkDevice());
-  };
+  }, []);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-   
+
     setDevice(checkDevice());
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [handleResize]);
 
-  useEffect(()=>{
-    console.log('DEVICE',device, globalThis.innerWidth)
-  },[device])
   return device;
 }
 

@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import AuthNav from "@/components/nav/authNav";
 import Image from "next/image";
+import UnAuthNav from "@/components/nav/unAuthNav";
 import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,13 +24,12 @@ export default async function publicLayout({
   const session = await getServerSession(authOptions)
   return (
     <>
-      <header className="sticky z-50 top-0  w-full border-white">{
-        <Section className="text-white flex items-center justify-between py-2">
+      <header className="sticky z-50 top-0  bg-gradient-to-b from-app-background from-60% to-transparent w-full border-white">{
+        <Section className="text-white flex items-center justify-between px-5 ">
           <Link href={'/'}>
-
             <Image alt="logo" className="max-w-24" width={120} height={120} src={process.env.HOST + '/logo.png'}></Image>
           </Link>
-          {session ? <AuthNav username={session?.user?.username} avatar={session?.user?.avatar} /> : <nav className="">Logged out  nav</nav>}
+          {session ? <AuthNav username={session?.user?.username} avatar={session?.user?.avatar} /> : <UnAuthNav />}
 
         </Section>
       }</header>

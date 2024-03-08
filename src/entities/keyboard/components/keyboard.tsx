@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import '../style.css'
 import useSetSoundHandlers from '../hooks/useSetSoundHandlers'
 import useResponsive from '@/lib/hooks/useResponsive'
-
+import KeyboardWrapper from './keyboardWrapper'
 export default function Keyboard({ keyboard, enableKeyDown = true, keySize = KeySize.xl, displayName = true }: { keyboard: KeyboardWithKeysAndDesign, enableKeyDown?: boolean, keySize?: KeySize, displayName?: boolean }) {
     const { isPhone } = useResponsive()
     const soundHandlers = useSetSoundHandlers(keyboard, enableKeyDown)
@@ -20,7 +20,9 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
                     <p title='description' className='keyboard-description text-xs'>{keyboard.description}</p>
                 </div>}
 
-                <div className='keyboard flex gap-2 flex-wrap  justify-center flex-grow py-3 px-2 m-auto max-w-3xl' id='keyboard'>
+                <KeyboardWrapper>
+
+
                     {keyboard.keys.map(key => {
                         return (
 
@@ -28,7 +30,7 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
                         )
                     })}
 
-                </div>
+                </KeyboardWrapper>
 
             </div >
         </>
