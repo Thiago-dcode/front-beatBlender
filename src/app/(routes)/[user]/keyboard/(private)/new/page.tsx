@@ -1,3 +1,3 @@
-export default function Profile({ params }: { params: { user: string, id: number } }) {
-    return <div>User Profile: {params.user}, new keyboard page</div>
+export default function NewKeyboard() {
+    return <div className="text-white">New keyboard page</div>
 }

@@ -7,11 +7,12 @@ import '@/entities/key/style.css'
 import SoundHandler from '@/lib/core/soundHandler'
 import { Key } from 'lucide-react'
 import Effects from '@/entities/effect/components/effects'
+import useResponsive from '@/lib/hooks/useResponsive'
 
 
 
 export default function KeyButton({ _key, size = KeySize.xl, soundHandler, enableKeyDown }: { _key: key, size?: KeySize, soundHandler: SoundHandler | undefined, enableKeyDown: boolean }) {
-
+    const { isPhone, isDesktop, isTablet } = useResponsive()
     const [ready, setReady] = useState(false)
     useEffect(() => {
 
@@ -30,14 +31,15 @@ export default function KeyButton({ _key, size = KeySize.xl, soundHandler, enabl
     }, [soundHandler])
 
 
+
     return (<>
         <div style={
             {
                 background: _key.bgColor || '',
-                width: `${size}rem`,
-                height: `${size}rem`
+                width: `${isPhone && size !== KeySize.sm ? size / 1.2 : size}rem`,
+                height: `${isPhone && size !== KeySize.sm ? size / 1.2 : size}rem`,
             }
-        } className={` relative button-key-div flex flex-col justify-center `} id={`div-${_key.key}`}>
+        } className={`relative button-key-div flex flex-col justify-center `} id={`div-${_key.key}`}>
             {ready && soundHandler &&
                 <>
                     {size !== KeySize.sm && <Effects effects={_key.effects} />}

@@ -23,21 +23,18 @@ export default async function publicLayout({
   const session = await getServerSession(authOptions)
   return (
     <>
-      <header className="sticky z-50 top-0  border-white">{
-        <Section className="text-white flex items-center justify-between" style={{
-          padding: '0.5rem 2.5rem'
-        }}>
+      <header className="sticky z-50 top-0  w-full border-white">{
+        <Section className="text-white flex items-center justify-between py-2">
           <Link href={'/'}>
-            <Image alt="logo" width={80} height={80} src={process.env.HOST + '/logo.png'}></Image>
+
+            <Image alt="logo" className="max-w-24" width={120} height={120} src={process.env.HOST + '/logo.png'}></Image>
           </Link>
-          {session ? <AuthNav /> : <nav className="">Logged out  nav</nav>}
+          {session ? <AuthNav username={session?.user?.username} avatar={session?.user?.avatar} /> : <nav className="">Logged out  nav</nav>}
 
         </Section>
       }</header>
       <Main>{children}</Main>
-      <footer>
-        <Section> this is the footer</Section>
-      </footer>
+
     </>
   );
 }

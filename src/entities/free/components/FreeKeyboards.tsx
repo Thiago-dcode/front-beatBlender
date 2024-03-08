@@ -10,19 +10,16 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
 
     const [keyboardName, setKeyboardName] = useState<string>(keyboard?.name)
     const [enable, setEnable] = useState<boolean>(false)
-    const [stale, setStale] = useState(0)
+    const [stale, setStale] = useState(1000 * 60 * 5)
     const { data, isPending, error } = useGetFreeKeyboard({
         name: keyboardName,
         enable,
         initialData: keyboard ? { keyboard } : undefined,
         stale
-
-
     })
 
     useEffect(() => {
         setEnable(false)
-        setStale(0)
     }, [])
     if (error) {
         if (error instanceof CustomError) {

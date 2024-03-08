@@ -1,17 +1,19 @@
 import React from 'react'
 import Link from 'next/link'
 type props = {
-    message: string,
-    linkMessage: string,
-    route: string
+    message?: string,
+
+    route: string,
+    classname?: string
+    children: React.ReactNode
 }
-function LinkComponent({message,linkMessage,route}:props) {
-  return (
-    <div className='text-white flex items-center gap-2'>
-    <p>{message}</p>
-  <Link className='font-bold text-app-blueLink'  href={route}>{linkMessage}</Link>
-  </div>
-  )
+function LinkComponent({ message = '', children, route, classname = '' }: props) {
+    return (
+        <div className={'text-white flex items-center gap-2 ' + classname}>
+            <p>{message}</p>
+            <Link className='font-bold text-app-blueLink' href={route}>{children}</Link>
+        </div>
+    )
 }
 
 export default LinkComponent

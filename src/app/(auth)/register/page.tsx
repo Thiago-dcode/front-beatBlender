@@ -146,11 +146,12 @@ export default function Register() {
               <ErrorText fontSize={FontSize.md} message={`${errors['root']?.message || ' '}`} />
             </div>
           </form>
-          <LinkComponent message="Already have an account?" linkMessage='Login.' route='/login' />
+          <LinkComponent message="Already have an account?" route='/login' >Login.</LinkComponent>
+
         </Form>
       </>}
 
       {isSuccess && <FormSuccess timer={timer} timerBrake={2} message='Successfully register' />}
-    </div>
+    </div >
   )
 }

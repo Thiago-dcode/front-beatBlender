@@ -5,6 +5,7 @@ export interface Keyboard {
   updatedAt: string;
   private: boolean;
   userId: number;
+  description?: string;
   desig_keyboardId: number | null;
   categories: category[];
 }
@@ -90,6 +91,7 @@ export interface User {
   token: string;
   updatedAt: string;
   username: string;
+  avatarUrl: string;
 }
 
 export interface UserWithToken {

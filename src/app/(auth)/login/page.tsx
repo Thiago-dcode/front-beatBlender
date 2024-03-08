@@ -53,12 +53,12 @@ export default function Login() {
     }
   }
   useEffect(() => {
-       if (!isSuccess || timer < 2 || !username) return
+    if (!isSuccess || timer < 2 || !username) return
 
     router.push(`${username}`)
     router.refresh()
 
-  }, [isSuccess, timer, router,username])
+  }, [isSuccess, timer, router, username])
 
   return (
 
@@ -93,8 +93,8 @@ export default function Login() {
               <ErrorText fontSize={FontSize.md} message={`${errors['root']?.message || ' '}`} />
             </div>
           </form>
-       
-           <LinkComponent message="Don't have an account?" linkMessage='Create one.' route='/register'/>
+
+          <LinkComponent message="Don't have an account?" route='/register'>Create one. </LinkComponent>
         </Form>
       </>}
       {isSuccess && <FormSuccess timer={timer} timerBrake={2} message='Sucessfully loggedin' />}

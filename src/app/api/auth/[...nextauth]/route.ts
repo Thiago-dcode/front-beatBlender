@@ -20,11 +20,11 @@ export const authOptions: NextAuthOptions = {
           username: credentials?.username,
           password: credentials?.password,
         });
-        const { email, avatar, id, username } = result.user;
+        const { email, avatarUrl, id, username } = result.user;
         const jwt = result.accessToken;
         return {
           email,
-          avatar,
+          avatar: avatarUrl,
           id,
           username,
           jwt,
