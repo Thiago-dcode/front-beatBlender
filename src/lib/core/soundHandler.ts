@@ -8,7 +8,7 @@ export default class SoundHandler {
   private keyElement: HTMLElement | null = null;
   private intervalId: ReturnType<typeof globalThis.setTimeout> | undefined =
     undefined;
-  constructor(private key: key) {
+  constructor(public key: key) {
     this.audio = new Audio();
 
     this.play = this.play.bind(this);

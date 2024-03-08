@@ -6,7 +6,7 @@ type props = {
 }
 function KeyboardWrapper({ children, className = '' }: props) {
     return (
-        <div className={cn('keyboard flex gap-2 flex-wrap  justify-center flex-grow py-3 px-2 m-auto max-w-3xl', className)} id='keyboard'> {children}</div>
+        <div className={cn('keyboard flex gap-2 flex-wrap items-center justify-start flex-grow py-3 px-2 m-auto max-w-3xl', className)} id='keyboard'> {children}</div>
     )
 }
 
