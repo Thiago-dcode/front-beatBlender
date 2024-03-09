@@ -1,22 +1,20 @@
-
 import { HttpClientError } from "../exceptions/exceptions";
-
 class HttpClient {
-  private defaultHeaders: HeadersInit = {
+  private static defaultHeaders: HeadersInit = {
     "Content-Type": "application/json",
     credentials: "include",
+    authorization: "",
   };
-  private defaultOptions: RequestInit = {
+  private static defaultOptions: RequestInit = {
     headers: this.defaultHeaders,
   };
-  constructor(
-    public baseUrl: string | undefined,
-    defaultOptions: RequestInit = {}
-  ) {
-    this.setDefaultOptions(defaultOptions);
+  static baseUrl: string | undefined;
+  constructor(baseUrl: string | undefined, defaultOptions: RequestInit = {}) {
+    HttpClient.setDefaultOptions(defaultOptions);
+    HttpClient.baseUrl = baseUrl;
   }
 
-  setHeaders(headers: HeadersInit) {
+  static setHeaders(headers: HeadersInit) {
     this.defaultHeaders = {
       ...this.defaultHeaders,
       ...headers,
@@ -25,13 +23,13 @@ class HttpClient {
       headers: this.defaultHeaders,
     });
   }
-  setDefaultOptions(options: RequestInit) {
+  static setDefaultOptions(options: RequestInit) {
     this.defaultOptions = {
       ...this.defaultOptions,
       ...options,
     };
   }
-  fetch(resource: string, options: RequestInit = {}) {
+  static fetch(resource: string, options: RequestInit = {}) {
     return new Promise<any>(async (resolve, reject) => {
       try {
         const res = await fetch(this.getUrl(resource), {
@@ -45,7 +43,7 @@ class HttpClient {
           data = undefined;
         }
         if (!res.ok) {
-          // console.log("RESPONSE", res);
+          console.log("RESPONSE", res);
           reject(
             new HttpClientError(
               data?.message || res.statusText,
@@ -66,7 +64,7 @@ class HttpClient {
     });
   }
 
-  private getUrl(resource: string) {
+  private static getUrl(resource: string) {
     if (resource.slice(0, 1) !== "/") {
       resource = `/${resource}`;
     }
@@ -74,10 +72,10 @@ class HttpClient {
 
     return url;
   }
-  get(resource: string, options: RequestInit = {}) {
+  static get(resource: string, options: RequestInit = {}) {
     return this.fetch(resource, options);
   }
-  post(
+  static post(
     resource: string,
     body: { [key: string]: any },
     options: RequestInit = {}
@@ -88,7 +86,7 @@ class HttpClient {
       body: JSON.stringify(body),
     });
   }
-  patch(
+  static patch(
     resource: string,
     body: { [key: string]: any },
     options: RequestInit = {}
@@ -104,6 +102,6 @@ const defaultHeader = {
   "Content-Type": "application/json",
   Authorization: `Bearer {token}`,
 };
-export const fetchFromClient = new HttpClient(process.env.NEXT_PUBLIC_API_URL);
-
-export const fetchFromServer = new HttpClient(process.env.API_URL);
+HttpClient.baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
+console.log('HttpClient.baseUrl',HttpClient.baseUrl)
+export const beatFetcher = HttpClient;

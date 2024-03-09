@@ -1,4 +1,4 @@
-import { fetchFromServer } from "@/lib/core/httpClient";
+import { beatFetcher } from "@/lib/core/httpClient";
 import { UserWithToken } from "@/types";
 import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
         password: {},
       },
       async authorize(credentials, req) {
-        const result: UserWithToken = await fetchFromServer.post("auth/login", {
+        const result: UserWithToken = await beatFetcher.post("auth/login", {
           username: credentials?.username,
           password: credentials?.password,
         });

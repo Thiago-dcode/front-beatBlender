@@ -6,6 +6,7 @@ import { formKeyboardSchema, FormKeyboardValidateType } from "../validate";
 const defaultValues = {
   name: "",
   description: "",
+  design: undefined,
 };
 export function useKeyboardForm() {
   return useForm<FormKeyboardValidateType>({

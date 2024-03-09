@@ -5,10 +5,10 @@ import {
 } from "@/lib/exceptions/exceptions";
 import { Data } from "./type";
 import { Keyboard } from "@/types";
-import { fetchFromClient } from "@/lib/core/httpClient";
+import { beatFetcher } from "@/lib/core/httpClient";
 export const getFreeKeyboard = async (name: string) => {
   try {
-    const data: Data = await fetchFromClient.get(`/free/keyboards/${name}`);
+    const data: Data = await beatFetcher.get(`/free/keyboards/${name}`);
     return data;
   } catch (error) {
     if (error instanceof HttpClientError)
@@ -20,7 +20,7 @@ export const getFreeKeyboards = async () => {
   try {
     const data: {
       keyboards: Keyboard[];
-    } = await fetchFromClient.get(`/free/keyboards`);
+    } = await beatFetcher.get(`/free/keyboards`);
 
     return data.keyboards;
   } catch (error) {
