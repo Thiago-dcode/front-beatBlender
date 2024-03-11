@@ -22,7 +22,7 @@ function useSetSoundHandlers(
   }, [keyboard.keys, soundHandlers]);
 
   useEffect(() => {
-    console.log("KEYBOARD:", keyboard);
+   
     const _soundHandlers = keyboard.keys.reduce<{
       [key: string]: SoundHandler;
     }>((acc, curr) => {
@@ -30,7 +30,7 @@ function useSetSoundHandlers(
       acc[key.toLowerCase()] = new SoundHandler(curr);
       return acc;
     }, {});
-    console.log(_soundHandlers);
+  
     setSoundHandlers(_soundHandlers);
   }, [keyboard]);
 

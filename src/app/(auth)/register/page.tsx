@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Loading, Size } from '@/components/ui/loading'
 import { FormRegisterValidateType } from '@/entities/auth/validate'
 import { useMutation } from '@tanstack/react-query'
-import { fetchFromClient } from '@/lib/core/httpClient'
+import { beatFetcher } from '@/lib/core/httpClient'
 import { HttpClientError } from '@/lib/exceptions/exceptions'
 import { ErrorText, FontSize } from '@/components/form/formError'
 import Keyboard from '@/entities/keyboard/components/keyboard'
@@ -32,7 +32,7 @@ export default function Register() {
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (formData: FormRegisterValidateType) => {
 
-      return fetchFromClient.post('/users', formData)
+      return beatFetcher.post('/users', formData)
 
 
     },

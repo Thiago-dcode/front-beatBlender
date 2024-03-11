@@ -7,21 +7,19 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { redirect } from "next/navigation"
 import { KeySize } from "@/types"
 import KeyboardCreateForm from "@/entities/keyboard/components/keyboardCreateForm"
-import { useSession } from "next-auth/react"
+import useSession from "@/lib/hooks/useSession"
 import { useEffect, useState } from "react"
 import { stat } from "fs"
 import { Loading } from "@/components/ui/loading"
+import { beatFetcher } from "@/lib/core/httpClient"
 
 export default function NewKeyboard({ params }: { params: { user: string } }) {
-
     const { data, status } = useSession()
     const [designUrl, setDesignUrl] = useState<string>()
     //TODO: fetch all resources necessary to build a keyboard:user(sounds,keys), designs, categories.
 
     useEffect(() => {
-        if (status === 'unauthenticated' || data?.user.username !== params.user) redirect('/')
-        if (status !== 'authenticated') return
-
+        if (status === 'unauthenticated' || (status === 'authenticated' && data?.user.username !== params.user)) redirect('/')
     }, [data, status, params.user])
     return <>
         {status === 'authenticated' && <div className="text-white">

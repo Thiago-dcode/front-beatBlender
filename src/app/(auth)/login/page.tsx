@@ -17,6 +17,7 @@ import { signIn } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import FormSuccess from '@/components/form/formSuccess'
 
+
 export default function Login() {
   const [isPending, setIspending] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -38,7 +39,6 @@ export default function Login() {
     const result = await signIn('credentials', { redirect: false, ...values })
     setIspending(false)
     if (result) {
-      console.log(result)
 
       if (result.error) {
 

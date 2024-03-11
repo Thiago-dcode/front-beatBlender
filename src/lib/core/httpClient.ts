@@ -3,16 +3,14 @@ class HttpClient {
   private static defaultHeaders: HeadersInit = {
     "Content-Type": "application/json",
     credentials: "include",
-    authorization: "",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
   private static defaultOptions: RequestInit = {
     headers: this.defaultHeaders,
   };
   static baseUrl: string | undefined;
-  constructor(baseUrl: string | undefined, defaultOptions: RequestInit = {}) {
-    HttpClient.setDefaultOptions(defaultOptions);
-    HttpClient.baseUrl = baseUrl;
-  }
 
   static setHeaders(headers: HeadersInit) {
     this.defaultHeaders = {
@@ -31,7 +29,7 @@ class HttpClient {
   }
   static fetch(resource: string, options: RequestInit = {}) {
     return new Promise<any>(async (resolve, reject) => {
-      try {
+     try {
         const res = await fetch(this.getUrl(resource), {
           ...this.defaultOptions,
           ...options,
@@ -43,7 +41,9 @@ class HttpClient {
           data = undefined;
         }
         if (!res.ok) {
-          console.log("RESPONSE", res);
+          if (res.status === 401) {
+            console.log("RESULT", res);
+          }
           reject(
             new HttpClientError(
               data?.message || res.statusText,
@@ -98,10 +98,7 @@ class HttpClient {
     });
   }
 }
-const defaultHeader = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer {token}`,
-};
+
 HttpClient.baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
-console.log('HttpClient.baseUrl',HttpClient.baseUrl)
+console.log('BASE URL',process.env.NEXT_PUBLIC_API_URL , process.env.API_URL)
 export const beatFetcher = HttpClient;
