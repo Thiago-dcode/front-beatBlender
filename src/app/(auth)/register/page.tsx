@@ -36,14 +36,13 @@ export default function Register() {
 
 
     },
+
     onSuccess(data, variables, context) {
       start()
     },
     onError(error, variables, context) {
-
-      console.error('ERROR REGISTERING A USER', error)
       if (error instanceof HttpClientError) {
-
+        console.error('ERROR REGISTERING A USER', error.errors)
         const variablesArr = Object.keys(variables)
 
         let hasError = false

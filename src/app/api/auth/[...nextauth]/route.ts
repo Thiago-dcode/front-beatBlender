@@ -1,36 +1,51 @@
 import { beatFetcher } from "@/lib/core/httpClient";
 import { InternalError } from "@/lib/exceptions/exceptions";
 import { verifyJwt } from "@/lib/utils";
-import { UserWithToken } from "@/types";
+import { RefreshToken, UserWithToken } from "@/types";
 import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
-async function refreshToken(jwt: string) {
-  const secret = process.env.JWT_KEY;
+// async function refreshToken(jwt: string): Promise<string> {
+//   const secret = process.env.JWT_KEY;
 
-  if (!secret) {
-    throw new InternalError("JWT SECRET IS MISSING");
-  }
-  const isValidJwt = await verifyJwt(jwt, secret);
-  if (isValidJwt) {
-    beatFetcher.setHeaders({
-      Authorization: `Bearer ${jwt}`,
-    });
+//   if (!secret) {
+//     throw new InternalError("JWT SECRET IS MISSING");
+//   }
+//   const isValidJwt = await verifyJwt(jwt, secret);
+//   if (isValidJwt) return jwt;
+//   const refreshTokenCookie = cookies().get("refresh-token");
+//   try {
+//     const { accessToken, newRefreshToken }: RefreshToken =
+//       await beatFetcher.post("/auth/refresh-token", {
+//         "refresh-token": refreshTokenCookie?.value || "",
+//       });
+//     return accessToken;
+//   } catch (error) {
+//     console.log("REFRESH TOKEN ERROR,", error);
+//   }
 
-    return;
-  }
-
-  try {
-    const newToken = await beatFetcher.get("/refresh-token");
-  } catch (error) {
-    await signOut();
-    redirect("/login");
-  }
-}
+//   return "";
+//   //
+//   // console.log('refreshTokenCookie',refreshTokenCookie)
+//   // try {
+//   //
+//   //   const {accessToken,newRefreshToken}: RefreshToken = await beatFetcher.post("/auth/refresh-token", {
+//   //     "refresh-token": refreshTokenCookie?.value,
+//   //   });
+//   //   console.log('NEW TOKEN', accessToken)
+//   //   cookies().set("refresh-token", newRefreshToken, {
+//   //     httpOnly: true,
+//   //     secure: true,
+//   //   });
+//   //   return accessToken;
+//   // } catch (error) {
+//   //   console.log("Error refreshing token", error);
+//   //   await signOut();
+//   //   redirect("/login");
+//   // }
+// }
 export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET,
   pages: {
@@ -43,13 +58,21 @@ export const authOptions: NextAuthOptions = {
         password: {},
       },
       async authorize(credentials, req) {
+    
         const result: UserWithToken = await beatFetcher.post("auth/login", {
           username: credentials?.username,
           password: credentials?.password,
         });
+     
         const { email, avatarUrl, id, username } = result.user;
         const jwt = result.accessToken;
-        cookies().set("jwt-token", jwt, {
+        console.log("------LOGGED IN SUCCESFULLY------");
+        const refreshToken = result.refreshToken;
+        cookies().set("refresh-token", refreshToken, {
+          httpOnly: true,
+          secure: true,
+        });
+        cookies().set("access-token", jwt, {
           httpOnly: true,
           secure: true,
         });
@@ -70,8 +93,6 @@ export const authOptions: NextAuthOptions = {
 
         return { ...token, username, email, id, jwt, avatar };
       }
-
-      await refreshToken(token.jwt);
       return token;
     },
     async session({ session, token }) {
@@ -88,6 +109,13 @@ export const authOptions: NextAuthOptions = {
           avatar,
         },
       };
+    },
+  },
+  events: {
+    signOut: () => {
+      console.log("SIGN OUT EVENT TRIGGERED");
+      cookies().delete("access-token");
+      cookies().delete("refresh-token");
     },
   },
 };

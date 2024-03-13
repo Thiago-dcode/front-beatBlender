@@ -18,10 +18,12 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
                     <p title='name' className='keyboard-title'>{keyboard.name}</p>
                     <p title='description' className='keyboard-description text-xs'>{keyboard.description}</p>
                 </div>}
-
+        
                 <KeyboardWrapper>
+        
+      
 
-
+      
                     {keyboard.keys.map(key => {
                         return (
 
@@ -30,7 +32,7 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
                     })}
 
                 </KeyboardWrapper>
-
+               
             </div >
         </>
     )

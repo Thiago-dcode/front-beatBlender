@@ -1,4 +1,7 @@
+import { json } from "stream/consumers";
 import { HttpClientError } from "../exceptions/exceptions";
+import { Method, RequestBody, body } from "@/types";
+
 class HttpClient {
   private static defaultHeaders: HeadersInit = {
     "Content-Type": "application/json",
@@ -27,12 +30,28 @@ class HttpClient {
       ...options,
     };
   }
-  static fetch(resource: string, options: RequestInit = {}) {
+  static fetch(
+    resource: string,
+    _method: Method,
+    _body: body | undefined = undefined,
+    options: RequestInit | undefined
+  ) {
     return new Promise<any>(async (resolve, reject) => {
-     try {
-        const res = await fetch(this.getUrl(resource), {
+      try {
+        const url = this.baseUrl
+          ? this.getUrl(resource)
+          : (process.env.HOST || process.env.NEXT_PUBLIC_HOST) + "/api/api";
+
+        const method = this.baseUrl ? _method : "POST";
+        const body = this.baseUrl
+          ? JSON.stringify(_body)
+          : this.getBody(resource, _method, _body, options);
+      
+        const res = await fetch(url, {
           ...this.defaultOptions,
           ...options,
+          body,
+          method,
         });
         let data;
         try {
@@ -41,9 +60,6 @@ class HttpClient {
           data = undefined;
         }
         if (!res.ok) {
-          if (res.status === 401) {
-            console.log("RESULT", res);
-          }
           reject(
             new HttpClientError(
               data?.message || res.statusText,
@@ -73,32 +89,39 @@ class HttpClient {
     return url;
   }
   static get(resource: string, options: RequestInit = {}) {
-    return this.fetch(resource, options);
+    return this.fetch(resource, "GET", undefined, options);
+  }
+  private static getBody(
+    resource: string,
+    method: Method,
+    body: { [key: string]: any } | undefined = undefined,
+    options: RequestInit | undefined = undefined
+  ) {
+    const _body: RequestBody = {
+      options: {
+        method,
+        resource,
+      },
+      data: body,
+      requestOptions: options,
+    };
+
+    return JSON.stringify(_body);
   }
   static post(
     resource: string,
     body: { [key: string]: any },
     options: RequestInit = {}
   ) {
-    return this.fetch(resource, {
-      ...options,
-      method: "POST",
-      body: JSON.stringify(body),
-    });
+    return this.fetch(resource, "POST", body, options);
   }
   static patch(
     resource: string,
     body: { [key: string]: any },
     options: RequestInit = {}
   ) {
-    return this.fetch(resource, {
-      ...options,
-      method: "PATCH",
-      body: JSON.stringify(body),
-    });
+    return this.fetch(resource, "POST", body, options);
   }
 }
 
-HttpClient.baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
-console.log('BASE URL',process.env.NEXT_PUBLIC_API_URL , process.env.API_URL)
 export const beatFetcher = HttpClient;

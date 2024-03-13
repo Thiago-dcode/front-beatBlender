@@ -28,7 +28,7 @@ export default function KeyboardCreateForm({ children, setDesignUrl }: props) {
     }
     const { data, error, isPending } = useQuery({
         queryKey: ['keyboard-designs'],
-        queryFn: () => beatFetcher.get('/design-keyboard')
+        queryFn: () => beatFetcher.get('/design-keyboard') 
     })
     const customOnChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'name' | 'description', max: number) => {
         form.clearErrors()
@@ -51,7 +51,7 @@ export default function KeyboardCreateForm({ children, setDesignUrl }: props) {
     return (
         <>
             {
-                true && <>
+                !isPending && <>
 
 
                     <Form {...form}>

@@ -1,3 +1,14 @@
+export type Method = "POST" | "GET" | "PATCH" | "DELETE" | "PUT" | "OPTIONS";
+export type body = { [key: string]: any };
+export interface RequestBody {
+  options: {
+    method: Method;
+    resource: string;
+  };
+  data: body | undefined;
+  requestOptions: RequestInit | undefined;
+}
+
 export interface Keyboard {
   id: number;
   name: string;
@@ -97,6 +108,11 @@ export interface User {
 export interface UserWithToken {
   user: User;
   accessToken: string;
+  refreshToken: string;
+}
+export interface RefreshToken {
+  accessToken: string,
+  newRefreshToken: string
 }
 
 export interface AccessToken {
