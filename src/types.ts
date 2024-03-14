@@ -64,11 +64,15 @@ export interface VolumeEffect {
   };
 }
 export interface DesignKeyboard {
-  id: number;
   name: string;
   path: string;
   designUrl: string;
-  isPremium: false;
+  isPremium: boolean;
+  colors: Color[];
+}
+export interface Color {
+  color: string;
+  id: number;
 }
 export enum KeySize {
   "sm" = 2,
@@ -111,8 +115,8 @@ export interface UserWithToken {
   refreshToken: string;
 }
 export interface RefreshToken {
-  accessToken: string,
-  newRefreshToken: string
+  accessToken: string;
+  newRefreshToken: string;
 }
 
 export interface AccessToken {

@@ -1,12 +1,25 @@
+import MetaLink from '@/components/metaLink'
 import React, { ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import keyboard from './keyboard'
+import { DesignKeyboard } from '@/types'
+import '@/entities/keyboard/style.css'
 type props = {
-    children: ReactNode,
-    className?: string
+    design?: DesignKeyboard | undefined;
+    children: ReactNode
 }
-function KeyboardWrapper({ children, className = '' }: props) {
+function KeyboardWrapper({ design, children }: props) {
     return (
-        <div className={cn('keyboard flex gap-2 flex-wrap items-center justify-center flex-grow py-3 px-2 m-auto max-w-3xl', className)} id='keyboard'> {children}</div>
+        <>
+            {design && <MetaLink href={design.designUrl} />}
+
+
+            < div className={`flex flex-col items-start gap-1 keyboard-design-${ design?.name || ''}`} >
+
+
+                {children}
+
+            </div>
+        </>
     )
 }
 
