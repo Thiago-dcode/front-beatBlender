@@ -40,7 +40,7 @@ function SelectForm({ setDesign, field }: props) {
         }
 
     }, [data, error, isPending])
- 
+
     return (
         <>
             {!error && !isPending && <Select onValueChange={(e) => {
@@ -53,19 +53,25 @@ function SelectForm({ setDesign, field }: props) {
 
 
             }} defaultValue={field.value}>
-                <FormControl className='bg-transparent'>
+                <FormControl className='bg-transparent capitalize'>
                     <SelectTrigger>
                         <SelectValue placeholder="Select a keyboard design" />
                     </SelectTrigger>
                 </FormControl>
-                <SelectContent className='bg-transparent text-white' >
+                <SelectContent className='bg-app-background text-white' >
 
 
-                    {data && data.map(designKeyboard => {
+                    {data && data.sort((a, b) => {
+                        const nameA = a.name.toLowerCase();
+                        const nameB = b.name.toLowerCase();
+                        if (nameA < nameB) return -1;
+                        if (nameA > nameB) return 1
+                        return 0;
+                    }).map(designKeyboard => {
 
 
                         return (
-                            <SelectItem key={designKeyboard.path} value={designKeyboard.name}>
+                            <SelectItem className='capitalize' key={designKeyboard.path} value={designKeyboard.name}>
                                 {designKeyboard.name}
                             </SelectItem>
                         )

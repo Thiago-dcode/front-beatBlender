@@ -10,9 +10,10 @@ import useSession from "@/lib/hooks/useSession"
 import { useEffect, useState } from "react"
 import SelectForm from "@/entities/designKeyboard/components/selectForm"
 import { Loading } from "@/components/ui/loading"
-
+import { SheetSide } from "@/components/form/sheetSide"
 import { FormField, FormItem, FormLabel, FormMessage, FormControl, FormDescription } from '@/components/ui/form'
 import { useKeyboardForm } from "@/entities/keyboard/hooks/useKeyboardForm"
+import DisplayKeys from "@/entities/key/components/displayKeys"
 
 export default function NewKeyboard({ params }: { params: { user: string } }) {
     const { data, status } = useSession()
@@ -42,6 +43,13 @@ export default function NewKeyboard({ params }: { params: { user: string } }) {
                         </FormItem>
                     )}
                 />
+                <SheetSide title="Choose your keys" displayName="Add keys" >
+
+                    {/* TODO: fetch user keys, allow user create key, fetch user sounds, allow user create sounds */}
+
+                    <DisplayKeys enable={true} />
+
+                </SheetSide>
                 < KeyboardWrapper design={design} >
                     <KeyboardKeyWrapper >
                         {

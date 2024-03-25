@@ -2,6 +2,7 @@ import SoundHandler from "@/lib/core/soundHandler";
 import React, { useCallback } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+
 export default function useIsSoundReady(
   soundHandler: SoundHandler | undefined
 ) {

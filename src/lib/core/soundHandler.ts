@@ -46,7 +46,6 @@ export default class SoundHandler {
   loop(effect: LoopEffect) {
     const { bpm } = effect.config;
 
-    console.log("BPM", bpm);
     if (this.audio.loop || this.intervalId) {
       this.pause();
       document
@@ -69,9 +68,11 @@ export default class SoundHandler {
 
   keyDown() {
     this.keyElement?.classList.add("button-key-clicked");
+
     if (this.audioRunning) return;
 
     this.key.effects.forEach((effect) => {
+      console.log("CLICKED");
       const { name } = effect;
       switch (name) {
         case "loop":

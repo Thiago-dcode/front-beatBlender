@@ -1,38 +1,36 @@
 import SoundHandler from "@/lib/core/soundHandler";
-import { KeyboardWithKeysAndDesign } from "@/types";
+import { key } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 
-function useSetSoundHandlers(
-  keyboard: KeyboardWithKeysAndDesign,
-  enableKeyDown: boolean
-) {
+function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
   const [soundHandlers, setSoundHandlers] = useState<{
     [key: string]: SoundHandler;
   }>();
+  const [_keys, setKeys] = useState(keys);
 
   const stopAll = useCallback(() => {
-    if (!soundHandlers) return;
+    if (!soundHandlers || !_keys) return;
 
-    keyboard.keys.forEach((key) => {
+    _keys.forEach((key) => {
       const soundHandler = soundHandlers[key.key.toLowerCase()];
       if (soundHandler) {
         soundHandler.pause();
       }
     });
-  }, [keyboard.keys, soundHandlers]);
+  }, [_keys, soundHandlers]);
 
   useEffect(() => {
-   
-    const _soundHandlers = keyboard.keys.reduce<{
+    if (!_keys) return;
+    const _soundHandlers = _keys.reduce<{
       [key: string]: SoundHandler;
     }>((acc, curr) => {
       const { key, sound } = curr;
       acc[key.toLowerCase()] = new SoundHandler(curr);
       return acc;
     }, {});
-  
+
     setSoundHandlers(_soundHandlers);
-  }, [keyboard]);
+  }, [_keys]);
 
   useEffect(() => {
     if (!enableKeyDown || !soundHandlers) return;
@@ -58,7 +56,7 @@ function useSetSoundHandlers(
     };
   }, [soundHandlers, enableKeyDown]);
 
-  return soundHandlers;
+  return { soundHandlers, setKeys };
 }
 
 export default useSetSoundHandlers;

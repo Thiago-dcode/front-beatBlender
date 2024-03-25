@@ -9,7 +9,7 @@ import MetaLink from '@/components/metaLink'
 import KeyboardWrapper from './keyboardWrapper'
 export default function Keyboard({ keyboard, enableKeyDown = true, keySize = KeySize.xl, displayName = true }: { keyboard: KeyboardWithKeysAndDesign, enableKeyDown?: boolean, keySize?: KeySize, displayName?: boolean }) {
     const { isPhone } = useResponsive()
-    const soundHandlers = useSetSoundHandlers(keyboard, enableKeyDown)
+    const {soundHandlers} = useSetSoundHandlers(keyboard.keys, enableKeyDown)
     return (
 
         <>

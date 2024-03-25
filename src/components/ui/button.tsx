@@ -9,6 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        minimal: 'bg-primary border bg-transparent border-white text-primary-foreground hover:bg-primary/90',
         green: "bg-app-greenPastel text-primary-foreground hover:bg-app-greenPastel/90",
         white: "bg-white text-black hover:bg-white/90",
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -28,7 +29,7 @@ const buttonVariants = cva(
         xs: "h-7 rounded-md px-2",
         lg: "h-11 rounded-md px-8",
         xl: "h-11 text-2xl rounded-md px-10",
-        icon: "h-10 w-10",
+        icon: "h-5 w-5",
         disable: ''
       },
     },
