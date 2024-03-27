@@ -52,7 +52,7 @@ export async function middleware(req: NextRequest) {
 
       requestHeaders.set("authorization", `Bearer ${jwt}`);
 
-      console.log("ACCESS TOKEN IS VALID", jwt);
+      console.log("ACCESS TOKEN IS VALID");
 
       return response;
     }
@@ -62,7 +62,7 @@ export async function middleware(req: NextRequest) {
       process.env.JWT_KEY || ""
     );
 
-    console.log("ACCESS TOKEN IS NOT VALID", jwt);
+    console.log("ACCESS TOKEN IS NOT VALID");
     if (!isvalidRefreshJwt) return response;
 
     console.log("--- STARTING REFRESHING TOKEN ---");
@@ -73,7 +73,7 @@ export async function middleware(req: NextRequest) {
         ["refresh-token"]: refreshJwt,
       });
     beatFetcher.baseUrl = undefined;
-    console.log("NEW ACCESS TOKEN IS VALID", accessToken);
+    console.log("NEW ACCESS TOKEN IS VALID");
     requestHeaders.set("authorization", `Bearer ${accessToken}`);
 
     response.cookies.set("refresh-token", newRefreshToken, {

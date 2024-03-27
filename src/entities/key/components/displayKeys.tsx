@@ -1,11 +1,20 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useGetKeys } from '../hooks/useGetKeys'
 import KeyboardKeyWrapper from '@/entities/keyboard/components/keyboardKeyWrapper'
 import KeyButton from './KeyButton'
-import { KeySize } from '@/types'
-import { PlusSquareIcon, WrenchIcon } from 'lucide-react';
+
+import { TooltipComponent } from '@/components/ui/toolTipComponent'
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
+import { KeySize, category, key, keyWithSoundHandler } from '@/types'
+import { PlusSquareIcon, WrenchIcon, InfoIcon } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -20,55 +29,123 @@ import { Label } from "@/components/ui/label"
 import useSetSoundHandlers from '@/entities/keyboard/hooks/useSetSoundHandlers'
 import { Button } from '@/components/ui/button'
 type Props = {
-    enable?: boolean
+    enable?: boolean,
+    keysSelected: keyWithSoundHandler[] | undefined,
+    handleAddKeys: (key: keyWithSoundHandler) => void
 }
-function DisplayKeys({ enable = false }: Props) {
+type keysByCategory = { [category: string]: key[] }
+function DisplayKeys({ enable = false, keysSelected, handleAddKeys }: Props) {
     const { data, error, isPending } = useGetKeys({ enable });
-    const { soundHandlers, setKeys } = useSetSoundHandlers(undefined, false)
+    const { soundHandlers, setKeys, keys } = useSetSoundHandlers(undefined, false)
+    const [keysByCategory, setKeysByCategory] = useState<keysByCategory>()
     useEffect(() => {
-        console.log('data,error,isPending', data, error, isPending)
+
         if (data) {
             setKeys(data)
+
         }
     }, [data, error, isPending, setKeys])
+
+    useEffect(() => {
+        if (!keys) return
+        console.log(keys)
+        const _keysByCategory: keysByCategory = keys.reduce((acc: keysByCategory, curr, i) => {
+            const category = curr.category.name;
+            if (acc[category]) {
+                acc[category].push(curr);
+            } else {
+                acc[category] = [curr];
+            }
+            return acc;
+
+        }, {
+
+        })
+        setKeysByCategory(_keysByCategory)
+    }, [keys])
+
+
+
     return (
         <>
-            <KeyboardKeyWrapper className='bg-transparent gap-1'>
+            <div className='flex flex-col items-center justify-center'>
+                <div className='self-end'>
+                    <TooltipComponent trigger={<InfoIcon size={20} color='black' />}>
+                        <p>Right Click over the key to edit it</p>
+                    </TooltipComponent>
+                </div>
 
-                {data && soundHandlers && data.map(key => {
+
+
+
+                {keysByCategory && soundHandlers && Object.entries(keysByCategory).map(([category, keys]) => {
 
                     return (
-                        <div key={key.key} className='border border-black p-1' >
-                            <div className=' py-1 w-full flex text-xs items-center justify-evenly '>
 
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button size={'icon'} variant="ghost"> <WrenchIcon /></Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm:max-w-[425px]">
-                                        <DialogHeader>
-                                            <DialogTitle>Edit profile</DialogTitle>
-                                            <DialogDescription>
-                                                Make changes to your profile here. Click save when you&apos;re done.
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                  
-                                        <DialogFooter>
-                                            <Button type="submit">Save changes</Button>
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
+                        <div className='flex flex-col w-full items-start justify-center px-4 ' key={category}>
+                            <h3 className='  w-full border-b  border-b-black/80'>{category}</h3>
+                            <Carousel
+                                opts={{
+                                    align: "start",
 
-                                <Button size={'icon'} variant={'default'}>   <PlusSquareIcon /></Button>
-                             
-                            </div>
-                            <KeyButton className='!shadow-none bg-app-background text-white' size={KeySize.sm} enableKeyDown={true} _key={key} soundHandler={soundHandlers[key.key]} />
+
+                                }} className="w-full ">
+
+                                <CarouselContent className="px-4 py-2">
+
+                                    {keys.filter((key) => {
+                                        if (!keysSelected) return true
+                                        return !keysSelected.some((_key) => {
+
+                                            return _key.id === key.id
+                                        })
+
+                                    }).map((key) => {
+
+
+                                        return (
+                                            <>
+                                                <div className=''>
+                                                    <CarouselItem key={key.key} className="  ">
+                                                        <div className='b flex flex-col items-center justify-center gap-1 border border-white px-2 py-1'>
+
+
+                                                            <h4 className='text-xs w-full text-center overflow-auto text-nowrap'>{key.name}</h4>
+                                                            <KeyButton className='!shadow-none bg-app-background text-white' size={5} enableKeyDown={true} _key={key} soundHandler={soundHandlers[key.key]} />
+                                                            <Button onClick={() => {
+                                                                handleAddKeys({
+                                                                    ...key, soundHandler: soundHandlers[key.key]
+                                                                })
+
+
+
+
+                                                            }} className=' h-6 !py-2 rounded-none w-full bg-black text-white hover:bg-black/50' >+</Button>
+                                                        </div>
+                                                    </CarouselItem>
+                                                </div>
+
+                                            </>
+                                        )
+
+                                    })}
+
+                                </CarouselContent>
+
+                                <CarouselPrevious className='ml-3' />
+                                <CarouselNext className=' mr-3' />
+                            </Carousel>
+
                         </div>
+
+
                     )
                 })}
 
 
-            </KeyboardKeyWrapper>
+
+            </div>
+
 
         </>
     )

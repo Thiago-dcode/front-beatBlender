@@ -13,6 +13,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
 import { ReactNode } from "react"
 
 const SHEET_SIDES = ["top", "right", "bottom", "left"] as const
@@ -20,39 +21,44 @@ const SHEET_SIDES = ["top", "right", "bottom", "left"] as const
 type SheetSide = (typeof SHEET_SIDES)[number]
 
 type Props = {
+
     side?: SheetSide,
     title: string,
     description?: string,
     displayName: string,
     trigger?: ReactNode,
     close?: ReactNode,
-    children: ReactNode
+    children: ReactNode,
+    className?: string,
+    onOpenChange?: (e: boolean) => void
 }
 
-export function SheetSide({ side = 'left', displayName = 'open', title, description = '', trigger = <Button variant="minimal">{displayName}</Button>, close = <Button type="submit">Close</Button>, children }: Props) {
+export function SheetSide({ onOpenChange = () => { }, side = 'left', displayName = 'open', title, description = '', trigger = <Button variant="minimal">{displayName}</Button>, close = <Button type="submit">Close</Button>, children, className = '' }: Props) {
     return (
-        <div className="grid grid-cols-2 gap-2">
 
-            <Sheet key={side}>
-                <SheetTrigger asChild>
-                    {trigger}
-                </SheetTrigger>
-                <SheetContent side={side}>
-                    <SheetHeader>
-                        <SheetTitle>{title}</SheetTitle>
-                        <SheetDescription>
-                           {description}
-                        </SheetDescription>
-                    </SheetHeader>
-                    {children}
-                    <SheetFooter>
-                        <SheetClose asChild>
+
+        <Sheet onOpenChange={(e) => {
+            onOpenChange(e)
+        }} open={undefined} key={side}>
+            <SheetTrigger asChild>
+                {trigger}
+            </SheetTrigger>
+            <SheetContent className={cn(className)} side={side}>
+                <SheetHeader>
+                    <SheetTitle>{title}</SheetTitle>
+                    <SheetDescription>
+                        {description}
+                    </SheetDescription>
+                </SheetHeader>
+                {children}
+                <SheetFooter>
+                    {/* <SheetClose asChild>
                             {close}
-                        </SheetClose>
-                    </SheetFooter>
-                </SheetContent>
-            </Sheet>
+                        </SheetClose> */}
+                </SheetFooter>
+            </SheetContent>
+        </Sheet>
 
-        </div>
+
     )
 }

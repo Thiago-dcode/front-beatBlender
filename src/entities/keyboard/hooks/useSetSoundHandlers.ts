@@ -25,7 +25,8 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
       [key: string]: SoundHandler;
     }>((acc, curr) => {
       const { key, sound } = curr;
-      acc[key.toLowerCase()] = new SoundHandler(curr);
+      const soundHandler = !soundHandlers || !soundHandlers[key.toLowerCase()] ? new SoundHandler(curr): soundHandlers[key.toLowerCase()]
+      acc[key.toLowerCase()] =soundHandler;
       return acc;
     }, {});
 
@@ -56,7 +57,7 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
     };
   }, [soundHandlers, enableKeyDown]);
 
-  return { soundHandlers, setKeys };
+  return { soundHandlers, setKeys ,keys: _keys};
 }
 
 export default useSetSoundHandlers;

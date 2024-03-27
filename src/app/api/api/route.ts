@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
   try {
     beatFetcher.baseUrl = process.env.API_URL;
 
-    console.log("AUTHORIZATION HEADER", authHeader);
+    // console.log("AUTHORIZATION HEADER", authHeader);
     beatFetcher.setHeaders({
       authorization: `Bearer ${authHeader}`,
     });

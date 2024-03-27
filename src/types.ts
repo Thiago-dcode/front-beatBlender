@@ -1,3 +1,5 @@
+import SoundHandler from "./lib/core/soundHandler";
+
 export type Method = "POST" | "GET" | "PATCH" | "DELETE" | "PUT" | "OPTIONS";
 export type body = { [key: string]: any };
 export interface RequestBody {
@@ -29,6 +31,7 @@ export interface KeyboardWithKeysAndDesign extends Keyboard {
 export interface key {
   id: number;
   key: string;
+  name: string;
   bgColor?: string;
   keyColor?: string;
   displayName: string;
@@ -36,7 +39,7 @@ export interface key {
   updatedAt: string;
   userId: number;
   desig_keyId: number | null;
-  categories: category[];
+  category: category;
   soundId: number | null;
   sound: Sound;
   effects: Effect[];
@@ -121,4 +124,9 @@ export interface RefreshToken {
 
 export interface AccessToken {
   accessToken: string;
+}
+
+
+export interface keyWithSoundHandler extends key {
+  soundHandler: SoundHandler
 }
