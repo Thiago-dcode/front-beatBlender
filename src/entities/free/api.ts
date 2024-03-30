@@ -9,6 +9,7 @@ import { beatFetcher } from "@/lib/core/httpClient";
 export const getFreeKeyboard = async (name: string) => {
   try {
     const data: Data = await beatFetcher.get(`/free/keyboards/${name}`);
+
     return data;
   } catch (error) {
     if (error instanceof HttpClientError)

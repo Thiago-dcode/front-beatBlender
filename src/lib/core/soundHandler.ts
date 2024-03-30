@@ -3,8 +3,9 @@ import { setInterval } from "timers";
 
 export default class SoundHandler {
   private readonly audio: HTMLAudioElement;
+
   private audioRunning: boolean = false;
-  canplay = false;
+  private _isConnected = false;
   private keyElement: HTMLElement | null = null;
   private intervalId: ReturnType<typeof globalThis.setTimeout> | undefined =
     undefined;
@@ -17,12 +18,15 @@ export default class SoundHandler {
     this.keyUp = this.keyUp.bind(this);
   }
 
-  init() {
-    this.audio.src = this.key.sound.soundUrl;
+  get isConnected() {
+    return this._isConnected;
+  }
+  init(optionalSrc: string | undefined = undefined) {
+    this.audio.src = optionalSrc || this.key.sound.soundUrl;
     return new Promise((resolve, reject) => {
       this.audio.addEventListener("canplaythrough", () => {
         this.keyElement = document.getElementById(`div-${this.key.key}`);
-        this.canplay = true;
+        this._isConnected = true;
         resolve(true);
       });
     });
@@ -67,12 +71,12 @@ export default class SoundHandler {
   }
 
   keyDown() {
+    console.log("CLICKED");
     this.keyElement?.classList.add("button-key-clicked");
 
     if (this.audioRunning) return;
 
     this.key.effects.forEach((effect) => {
-      console.log("CLICKED");
       const { name } = effect;
       switch (name) {
         case "loop":

@@ -13,19 +13,8 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
-import { KeySize, category, key, keyWithSoundHandler } from '@/types'
-import { PlusSquareIcon, WrenchIcon, InfoIcon } from 'lucide-react';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { key, keyWithSoundHandler } from '@/types'
+
 import useSetSoundHandlers from '@/entities/keyboard/hooks/useSetSoundHandlers'
 import { Button } from '@/components/ui/button'
 type Props = {
@@ -67,14 +56,9 @@ function DisplayKeys({ enable = false, keysSelected, handleAddKeys }: Props) {
 
 
     return (
-        <>
-            <div className='flex flex-col items-center justify-center'>
-                <div className='self-end'>
-                    <TooltipComponent trigger={<InfoIcon size={20} color='black' />}>
-                        <p>Right Click over the key to edit it</p>
-                    </TooltipComponent>
-                </div>
-
+       
+            <div className='flex flex-col items-center justify-center mb-4'>
+              
 
 
 
@@ -147,7 +131,6 @@ function DisplayKeys({ enable = false, keysSelected, handleAddKeys }: Props) {
             </div>
 
 
-        </>
     )
 }
 

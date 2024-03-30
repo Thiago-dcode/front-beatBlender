@@ -34,7 +34,7 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
 
             <div className="flex ">
                 <div>
-                    {data?.keyboard && <Keyboard keySize={KeySize.xl} enableKeyDown={true} keyboard={data.keyboard} />}
+                    {data?.keyboard && <Keyboard enableEdit={true} keySize={KeySize.xl} enableKeyDown={true} keyboard={data.keyboard} />}
                     {isPending && <p>Loading...</p>}
                 </div>
 

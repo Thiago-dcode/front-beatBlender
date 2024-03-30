@@ -16,8 +16,8 @@ import { useKeyboardForm } from "@/entities/keyboard/hooks/useKeyboardForm"
 import DisplayKeys from "@/entities/key/components/displayKeys"
 import { Button } from "@/components/ui/button"
 import KeyButton from "@/entities/key/components/KeyButton"
-import SoundHandler from "@/lib/core/soundHandler"
-
+import EditKeyForm from "@/entities/key/components/editKeyForm"
+import ContextMenuComponent from "@/components/ui/contextMenuComponent"
 
 export default function NewKeyboard({ params }: { params: { user: string } }) {
     const { data, status } = useSession()
@@ -36,24 +36,23 @@ export default function NewKeyboard({ params }: { params: { user: string } }) {
         })
 
     }
-    const renderKeyBoard = (design: DesignKeyboard |undefined) => {
+    const renderKeyBoard = (design: DesignKeyboard | undefined) => {
 
-        return (< KeyboardWrapper design={design}  >
-            <KeyboardKeyWrapper className="!max-w-[400px]" >
+        return (< KeyboardWrapper className="!max-w-[450px] m-auto" showToolTip={keysSelected && keysSelected.length > 0} design={design}  >
+            <KeyboardKeyWrapper >
                 {keysSelected && keysSelected.length > 0 ?
                     keysSelected.map((key) => {
 
                         return (
-                            <button onContextMenu={(e) => {
-                                e.preventDefault()
-                                key.soundHandler.pause()
-                                setKeysSelected(keysSelected.filter((_key) => _key.id !== key.id))
-                            
-                            }} className="bg-transparent  border-blue" key={key.id}>
+
+                            <ContextMenuComponent key={key.id} trigger={<KeyButton _key={key} soundHandler={key.soundHandler} enableKeyDown={false} size={KeySize.md} />}>
+
+                                <EditKeyForm keyEntity={key} />
+
+                            </ContextMenuComponent>
 
 
-                                <KeyButton _key={key} soundHandler={key.soundHandler} enableKeyDown={false} size={KeySize.md} />
-                            </button>
+
                         )
                     }) : [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => {
 
@@ -67,6 +66,7 @@ export default function NewKeyboard({ params }: { params: { user: string } }) {
         </KeyboardWrapper>)
     }
     useEffect(() => {
+        
         if (status === 'unauthenticated' || (status === 'authenticated' && data?.user.username !== params.user)) redirect('/')
     }, [data, status, params.user])
 
@@ -88,18 +88,21 @@ export default function NewKeyboard({ params }: { params: { user: string } }) {
                         </FormItem>
                     )}
                 />
-                <SheetSide onOpenChange={(e) => {
+            <Button type="button" onClick={()=>{
+                setEnable(true)
+            }} variant={'minimal'}>Add keys</Button>
+                
+                {!enable && renderKeyBoard(design)}
+            </KeyboardCreateForm >
+            <SheetSide open={enable} onOpenChange={(e) => {
                     setEnable(e)
-                }} title="Choose your keys" displayName="Add keys" className="!max-w-full border-4 bg-white/80" >
+                }} title="Choose your keys" displayName="Add keys" className="!max-w-full  bg-white/80" >
 
                     {/* TODO: fetch user keys, allow user create key, fetch user sounds, allow user create sounds */}
 
                     {enable && <DisplayKeys keysSelected={keysSelected} handleAddKeys={handleAddKeyButton} enable={enable} />}
                     {enable && <div>{renderKeyBoard(design)}</div>}
                 </SheetSide>
-                {!enable && renderKeyBoard(design)}
-            </KeyboardCreateForm >
-
 
         </div>}
         {status !== 'authenticated' && <Loading />}

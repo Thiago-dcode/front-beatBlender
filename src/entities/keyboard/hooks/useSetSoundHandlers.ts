@@ -20,17 +20,22 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
   }, [_keys, soundHandlers]);
 
   useEffect(() => {
-    if (!_keys) return;
+    if (!_keys) {
+      setSoundHandlers(undefined);
+      return;
+    }
+    
     const _soundHandlers = _keys.reduce<{
       [key: string]: SoundHandler;
     }>((acc, curr) => {
-      const { key, sound } = curr;
-      const soundHandler = !soundHandlers || !soundHandlers[key.toLowerCase()] ? new SoundHandler(curr): soundHandlers[key.toLowerCase()]
-      acc[key.toLowerCase()] =soundHandler;
+      const { key, id, sound } = curr;
+      const soundHandler = new SoundHandler(curr);
+      acc[key.toLowerCase()] = soundHandler;
       return acc;
     }, {});
 
     setSoundHandlers(_soundHandlers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_keys]);
 
   useEffect(() => {
@@ -55,9 +60,10 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
       document.removeEventListener("keyup", eventOnKeyUp);
       stopAll();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [soundHandlers, enableKeyDown]);
 
-  return { soundHandlers, setKeys ,keys: _keys};
+  return { soundHandlers, setKeys, keys: _keys };
 }
 
 export default useSetSoundHandlers;

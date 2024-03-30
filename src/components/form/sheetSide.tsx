@@ -14,7 +14,7 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { ReactNode } from "react"
+import { ReactNode, useState } from "react"
 
 const SHEET_SIDES = ["top", "right", "bottom", "left"] as const
 
@@ -30,20 +30,27 @@ type Props = {
     close?: ReactNode,
     children: ReactNode,
     className?: string,
+    open?: boolean,
     onOpenChange?: (e: boolean) => void
 }
 
-export function SheetSide({ onOpenChange = () => { }, side = 'left', displayName = 'open', title, description = '', trigger = <Button variant="minimal">{displayName}</Button>, close = <Button type="submit">Close</Button>, children, className = '' }: Props) {
+export function SheetSide({ open = false, onOpenChange = () => { }, side = 'left', displayName = 'open', title, description = '', trigger = undefined, close = <Button type="submit">Close</Button>, children, className = '' }: Props) {
+
+
+
+
     return (
 
 
-        <Sheet onOpenChange={(e) => {
+        <Sheet  onOpenChange={(e) => {
             onOpenChange(e)
-        }} open={undefined} key={side}>
-            <SheetTrigger asChild>
+        }} open={open} key={side}>
+            <SheetTrigger onClick={(e) => {
+
+            }} asChild>
                 {trigger}
             </SheetTrigger>
-            <SheetContent className={cn(className)} side={side}>
+            <SheetContent  className={cn(className)} side={side}>
                 <SheetHeader>
                     <SheetTitle>{title}</SheetTitle>
                     <SheetDescription>

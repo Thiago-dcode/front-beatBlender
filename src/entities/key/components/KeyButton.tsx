@@ -11,6 +11,7 @@ type Props = { _key: key, size?: KeySize | number, soundHandler: SoundHandler | 
 export default function KeyButton({ _key, size = KeySize.xl, soundHandler, enableKeyDown, className = '' }: Props) {
     const { isPhone, isDesktop, isTablet } = useResponsive()
     const ready = useIsSoundReady(soundHandler)
+    
     return (<>
 
         <KeyWrapper className={cn(className)} bgColor={_key.bgColor} size={isPhone && size !== KeySize.sm ? size / 1.2 : size} id={_key.key}>
@@ -19,7 +20,7 @@ export default function KeyButton({ _key, size = KeySize.xl, soundHandler, enabl
                     {size >= KeySize.md && <Effects effects={_key.effects} />}
                     <Button style={{
                         color: _key.keyColor || '',
-                    }} variant={'disable'} id={`key-${_key.key}`} className='key-button'  onClick={() => {
+                    }} variant={'disable'} id={`key-${_key.key}`} className='key-button' onClick={() => {
                         soundHandler.keyDown()
                         soundHandler.keyUp()
                     }} key={_key.id}>

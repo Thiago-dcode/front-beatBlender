@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html className="flex w-screen items-center justify-center" lang="en">
     
-      <body className={`${roboto_mono.className} max-w-[1400px] w-full bg-app-background flex flex-col items-center justify-center`}><Provider> {children} </Provider></body>
+      <body className={`${roboto_mono.className} relative max-w-[1400px] w-full bg-app-background flex flex-col items-center justify-center`}><Provider> {children} </Provider></body>
     </html>
   );
 }
