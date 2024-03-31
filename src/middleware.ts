@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { verifyJwt } from "./lib/utils";
 import { beatFetcher } from "./lib/core/httpClient";
 import { RefreshToken, RequestBody } from "./types";
-
+import appConfig from "./config";
 export async function middleware(req: NextRequest) {
   console.log("ACCESSING MIDDLEWARE:", req.url);
   const requestHeaders = new Headers(req.headers);
@@ -24,9 +24,8 @@ export async function middleware(req: NextRequest) {
     }
 
     const { method, resource } = body.options;
-    const authApiResources: Record<string, RegExp[]> = {
-      GET: [/^\/design-keyboard(\/.*)?$/],
-    };
+    const authApiResources: Record<string, RegExp[]> =
+      appConfig.authApiResources;
 
     if (!authApiResources[method]) {
       return response;

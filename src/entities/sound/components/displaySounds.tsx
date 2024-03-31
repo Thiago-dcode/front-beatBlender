@@ -18,7 +18,7 @@ function DisplaySounds({ enable }: { enable: boolean }) {
         [key: number]: SoundFolderWithSounds
     }>()
     const [_enable, setEnable] = useState<boolean>(false)
-    const { data: soundFolders, isLoading:isLoadingSoundFolders } = useGetSounds({ enable })
+    const { data: soundFolders, isLoading: isLoadingSoundFolders } = useGetSounds({ enable })
     const { data: SoundFolderWithSounds } = useGetSoundFolder({
         enable: _enable,
         id,
@@ -26,7 +26,8 @@ function DisplaySounds({ enable }: { enable: boolean }) {
     })
 
     useEffect(() => {
-        if (soundFolders) {
+
+        if (soundFolders && (!soundFoldersWithSounds || !soundFoldersWithSounds[soundFolders[0].id])) {
             setId(soundFolders[0].id)
             setEnable(true)
         }
@@ -81,7 +82,7 @@ function DisplaySounds({ enable }: { enable: boolean }) {
                     </AccordionItem>
                 </>
             })}
-            {isLoadingSoundFolders && <Loading/>}
+            {isLoadingSoundFolders && <Loading />}
 
         </Accordion>
     )
