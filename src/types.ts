@@ -91,6 +91,18 @@ export interface Sound {
   sound_folderId: number;
   soundUrl: string;
 }
+
+export interface SoundFolder {
+  id: number;
+  name: string;
+  path: string;
+  userId: number;
+  is_default: boolean;
+  
+}
+export interface SoundFolderWithSounds extends SoundFolder {
+  sounds: Sound[]
+}
 export interface category {
   id: number;
   name: string;

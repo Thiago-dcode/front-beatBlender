@@ -14,6 +14,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import DisplaySounds from "@/entities/sound/components/displaySounds";
 // const allowedKeys = [
 //     'KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI', 'KeyJ', 'KeyK', 'KeyL', 'KeyM',
 //     'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR', 'KeyS', 'KeyT', 'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
@@ -134,7 +135,6 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
     useEffect(() => {
         if (!keyEntity) return
 
-        console.log(keyEntity)
         setKeyPress(keyEntity.key)
         setDisplayName(keyEntity.displayName)
         setName(keyEntity.name)
@@ -176,9 +176,7 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="z-[99]">
-                                    <div>
-                                        your sounds
-                                    </div>
+                                  <DisplaySounds enable = {true}/>
                                 </PopoverContent>
                             </Popover>
 
