@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import React, { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Color, key, keyWithSoundHandler } from "@/types";
+import { Color, Sound, key, keyWithSoundHandler } from "@/types";
 import { PlayIcon, PlayCircleIcon, Divide } from "lucide-react";
 import SeparationBar from "@/components/ui/separationBar";
 import DivWrapper from "@/components/wrapper/DivWrapper";
@@ -15,6 +15,8 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import DisplaySounds from "@/entities/sound/components/displaySounds";
+import { truncateString } from "@/lib/utils";
+import Info from "@/components/ui/Info";
 // const allowedKeys = [
 //     'KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI', 'KeyJ', 'KeyK', 'KeyL', 'KeyM',
 //     'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR', 'KeyS', 'KeyT', 'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
@@ -25,22 +27,37 @@ import DisplaySounds from "@/entities/sound/components/displaySounds";
 //     'NumpadAdd', 'NumpadSubtract', 'NumpadMultiply', 'NumpadDivide', 'NumpadEnter', 'NumpadDecimal', 'NumpadComma'
 // ];
 type Props = {
-    keyEntity?: keyWithSoundHandler,
+    keyEntity?: key,
     colors?: Color[]
 }
 export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props) {
-    const [audio, setAudio] = useState<HTMLAudioElement | SoundHandler>(new Audio())
+    const [audio, setAudio] = useState<HTMLAudioElement>(new Audio());
+    const [audioSrc, setAudioSrc] = useState('')
     const [keyPress, setKeyPress] = useState<string>();
     const [name, setName] = useState<string>();
     const [displayName, setDisplayName] = useState<string>();
     const [audioFile, setAudioFile] = useState<File>()
+    const [sound, setSound] = useState<Sound>()
+    const [isOpenPop, setIsOpenPop] = useState(false)
     const [placeHolder, setPlaceHolder] = useState('Select a key')
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 
         e.preventDefault();
 
     };
+    const handlePlay = (src: string) => {
+        if (!(audio instanceof HTMLAudioElement)) return
+        audio.src = src
 
+
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.currentTime = 0;
+            audio.play();
+        }
+
+    }
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         const notAllowedKeys = [
             "ArrowUp",
@@ -102,22 +119,29 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
 
 
     };
+    const handleSetSound = (_sound: Sound) => {
 
+        setSound(_sound)
+        setAudioFile(undefined)
+        setAudioSrc(_sound.soundUrl)
+        setIsOpenPop(false)
+        handleSetName(_sound.name)
+    }
+    const handleSetName = (str: string) => {
+
+
+        setName(truncateString(str))
+
+    }
     const handleSetAudioFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
         if (!e.target.files) return
-
-        setAudioFile(e.target.files[0])
+        setSound(undefined)
+        const file = e.target.files[0]
+        setAudioFile(file)
+        handleSetName(file.name)
         const audioUrl = URL.createObjectURL(e.target.files[0])
-        if (audio instanceof SoundHandler) {
-
-            await audio.init(audioUrl)
-
-        }
-        else if (audio instanceof HTMLAudioElement) {
-            audio.src = audioUrl
-
-        }
+        setAudioSrc(audioUrl)
 
     }
     useEffect(() => {
@@ -134,7 +158,7 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
 
     useEffect(() => {
         if (!keyEntity) return
-
+        setAudioSrc(keyEntity.sound.soundUrl)
         setKeyPress(keyEntity.key)
         setDisplayName(keyEntity.displayName)
         setName(keyEntity.name)
@@ -143,20 +167,23 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
 
 
 
+
     return (
         <div className="flex items-start justify-center w-full flex-col">
-            <form className="flex flex-col items-center justify-center w-full gap-2" onKeyDown={(e) => {
+            <form className="flex flex-col items-center justify-center w-full gap-2 " onKeyDown={(e) => {
                 if (e.key === 'Enter') e.preventDefault();
                 return
             }} onSubmit={handleSubmit}>
                 {/* SOUND DIV */}
 
-                <DivWrapper className="flex-col" title={<p>Sound</p>}>
+                <h3 className="text-white text-xl">Edit key</h3>
+                <SeparationBar />
+                <DivWrapper className="flex-col" title={<Info iconColor="white" text='Choose the key audio' />}>
 
                     {keyEntity && <DivWrapper className="gap-2 mb-2">
                         <p>Your current sound:</p>
                         <button onClick={() => {
-                            keyEntity.soundHandler.play()
+                            handlePlay(keyEntity.sound.soundUrl)
                         }}><PlayCircleIcon color="white" /></button>
 
                     </DivWrapper>}
@@ -169,14 +196,16 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
                         </p>
 
                         <div className=" w-1/2 flex flex-col items-center justify-center gap-2 self-end p-2">
-                            <Popover>
+                            <Popover open={isOpenPop}>
                                 <PopoverTrigger asChild>
-                                    <Button variant={'minimal'} className="w-full">
+                                    <Button onClick={() => {
+                                        setIsOpenPop(!isOpenPop)
+                                    }} variant={'minimal'} className="w-full">
                                         Your audios
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="z-[99]">
-                                  <DisplaySounds enable = {true}/>
+                                    <DisplaySounds handlePlay={handlePlay} setSound={handleSetSound} enable={true} />
                                 </PopoverContent>
                             </Popover>
 
@@ -203,26 +232,18 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
                         </div>
 
                     </DivWrapper>
-                    {audio && <DivWrapper className="gap-2 mt-2">
+                    {audio && (audioFile || sound) && audioSrc && <DivWrapper className="gap-2 mt-2">
                         <p>Your audio selected:</p>
                         <button onClick={() => {
-                            audio.play()
+                            handlePlay(audioSrc)
                         }}><PlayCircleIcon color="white" /></button>
 
                     </DivWrapper>}
                 </DivWrapper>
                 <SeparationBar />
-                <div>
 
-                    {keyEntity && <div>
-                        Or choose a new one
-                    </div>}
-                    <div className="text-white flex flex-col justify-center gap-2">
-                        <Label htmlFor="sound">Sound</Label>
 
-                    </div>
-                </div>
-                <div className="text-white flex flex-col justify-center gap-2">
+                <DivWrapper title={<Info iconColor="white" text='Choose a identifying name for your key(up to 10 characters)' />} className="flex-col gap-2 self-center items-center px-2 max-w-48">
                     <Label htmlFor="name">Key name</Label>
                     <Input id="name" name="name" className="text-center"
 
@@ -230,49 +251,56 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
                         placeholder={'Your key name'}
                         value={name}
                         onChange={(e) => {
-                            setName(e.target.value)
+                            handleSetName(e.target.value.trim())
                         }}
 
                     />
-                </div>
-                <div className="text-white flex flex-col justify-center gap-2">
-                    <Label htmlFor="key">Key</Label>
-                    <Input id="key" name="key" className="text-center"
-                        onChange={(e) => {
-                            e.target.value = "";
-                        }}
-                        onFocus={() => {
-                            setPlaceHolder('Now press a key')
-                        }}
-                        onBlur={() => {
-                            setPlaceHolder('Select a key')
-                        }}
+                </DivWrapper>
+                <SeparationBar />
+                <DivWrapper className="gap-2 px-2" >
+                    <DivWrapper className=" flex-col gap-2 items-center justify-center">
+                        <Label htmlFor="key" className="flex items-center justify-between gap-2"><span>Key</span> <Info iconSize={15} iconColor="white" text='Click on the Key box, and them press a KEY from your keyboard to choose a key.' /></Label>
+                        <Input id="key" name="key" className="text-center "
+                            onChange={(e) => {
+                                e.target.value = "";
+                            }}
+                            onFocus={() => {
+                                setPlaceHolder('Now press a key')
+                            }}
+                            onBlur={() => {
+                                setPlaceHolder('Select a key')
+                            }}
 
-                        placeholder={placeHolder}
-                        value={keyPress}
-                        onKeyDown={(e) => {
-                            handleKeyDown(e)
-                        }}
-                    />
-                </div>
-                <div className="text-white flex flex-col justify-center gap-2">
-                    <Label htmlFor="display-name">Display Name</Label>
-                    <Input name="display-name" id="display-name" className="text-center"
+                            placeholder={placeHolder}
+                            value={keyPress}
+                            onKeyDown={(e) => {
+                                handleKeyDown(e)
+                            }}
+                        />
+                    </DivWrapper>
+                    <DivWrapper className="flex-col gap-2 items-center justify-center" >
+                        <Label htmlFor="display-name">Display Name</Label>
+                        <Input name="display-name" id="display-name" className="text-center"
 
 
-                        placeholder={'Display key name'}
-                        value={displayName}
-                        onChange={(e) => {
-                            if (!e.target.value) {
-                                setDisplayName(keyPress)
-                                return
-                            }
-                            if (e.target.value.length > 3) return
-                            setDisplayName(e.target.value)
-                        }}
+                            placeholder={'Display key name'}
+                            value={displayName}
+                            onChange={(e) => {
+                                if (!e.target.value) {
+                                    setDisplayName(keyPress)
+                                    return
+                                }
+                                if (e.target.value.length > 3) return
+                                setDisplayName(e.target.value)
+                            }}
 
-                    />
-                </div>
+                        />
+                    </DivWrapper>
+                </DivWrapper>
+                <SeparationBar />
+
+
+
                 <KeyWrapper id="null" bgColor="white" size={4}>
 
                     <button className="text-black capitalize">

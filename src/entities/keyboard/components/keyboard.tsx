@@ -24,13 +24,13 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
         <>
 
 
-            < KeyboardWrapper showToolTip= {enableEdit} design={keyboard.design} >
+            < KeyboardWrapper design={keyboard.design} >
                 {displayName && !isPhone && <div className='keyboard-title px-5 text-white flex items-center w-full justify-between'>
                     <p title='name' className='keyboard-title'>{keyboard.name}</p>
                     <p title='description' className='keyboard-description text-xs'>{keyboard.description}</p>
                 </div>}
 
-                <KeyboardKeyWrapper>
+                <KeyboardKeyWrapper showToolTip={enableEdit}>
 
 
 
@@ -43,7 +43,7 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
 
                                 <ContextMenuComponent key={key.id} trigger={<KeyButton enableKeyDown={enableKeyDown} soundHandler={soundHandlers ? soundHandlers[key.key] : undefined} size={keySize} key={key.id} _key={key} />}>
 
-                                    <EditKeyForm keyEntity={{ ...key, soundHandler: soundHandlers[key.key] }} />
+                                    <EditKeyForm keyEntity={key} />
 
                                 </ContextMenuComponent>
 

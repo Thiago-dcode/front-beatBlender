@@ -7,24 +7,21 @@ import '@/entities/keyboard/style.css'
 import { cn } from '@/lib/utils'
 import { TooltipComponent } from '@/components/ui/toolTipComponent'
 import { InfoIcon } from 'lucide-react'
+import Info from '@/components/ui/Info'
 type props = {
     design?: DesignKeyboard | undefined;
     children: ReactNode,
     className?: string,
-    showToolTip?: boolean
+    
 }
-function KeyboardWrapper({ design, children, className = '', showToolTip = false }: props) {
+function KeyboardWrapper({ design, children, className = ''}: props) {
     return (
         <>
             {design && <MetaLink href={design.designUrl} />}
 
 
             < div className={cn(`flex flex-col items-start gap-1 keyboard-design-${design?.name || ''}`, className)} >
-                <div className='self-end'>
-                    {showToolTip && <TooltipComponent trigger={<InfoIcon size={20} color='black' />}>
-                        <p>Right Click over the key to edit it</p>
-                    </TooltipComponent>}
-                </div>
+              
 
 
                 {children}

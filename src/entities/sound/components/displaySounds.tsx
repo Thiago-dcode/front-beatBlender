@@ -10,21 +10,23 @@ import {
 } from "@/components/ui/accordion"
 import { Button } from '@/components/ui/button'
 import { useGetSoundFolder } from '../hooks/useGetSoundFolder'
-import { SoundFolderWithSounds } from '@/types'
+import { Sound, SoundFolderWithSounds } from '@/types'
 import { Loading } from '@/components/ui/loading'
-function DisplaySounds({ enable }: { enable: boolean }) {
+import { PlayCircleIcon } from 'lucide-react'
+function DisplaySounds({ enable, setSound = () => { },handlePlay = ()=>{} }: { enable: boolean, setSound?: (sound: Sound) => void , handlePlay?: (src:string)=>void}) {
     const [id, setId] = useState<number>()
     const [soundFoldersWithSounds, setSoundFoldersWithSounds] = useState<{
         [key: number]: SoundFolderWithSounds
     }>()
+    const audio = new Audio();
     const [_enable, setEnable] = useState<boolean>(false)
     const { data: soundFolders, isLoading: isLoadingSoundFolders } = useGetSounds({ enable })
-    const { data: SoundFolderWithSounds } = useGetSoundFolder({
+    const { data: SoundFolderWithSounds, isLoading } = useGetSoundFolder({
         enable: _enable,
         id,
         stale: 60 * 60 * 24
     })
-
+ 
     useEffect(() => {
 
         if (soundFolders && (!soundFoldersWithSounds || !soundFoldersWithSounds[soundFolders[0].id])) {
@@ -53,8 +55,8 @@ function DisplaySounds({ enable }: { enable: boolean }) {
     }, [SoundFolderWithSounds])
     return (
         <Accordion onValueChange={(e) => {
-            console.log('SOUND FOLDER ID', e)
-            if (!e) return
+
+            if (!e || isLoading) return
             const id = parseInt(e)
             if (soundFoldersWithSounds && soundFoldersWithSounds[id]) return
             setId(id)
@@ -67,19 +69,23 @@ function DisplaySounds({ enable }: { enable: boolean }) {
 
 
                 return <>
-                    <AccordionItem className='capitalize w-full' value={soundFolder.id.toString()}>
-                        <AccordionTrigger onClick={() => {
-                            console.log('fetching sound folder')
-                        }}>{soundFolder.name}</AccordionTrigger>
-                        <AccordionContent>
+                    {!isLoading ? <AccordionItem className='capitalize w-full' value={soundFolder.id.toString()}>
+                        <AccordionTrigger>{soundFolder.name}</AccordionTrigger>
+                        <AccordionContent className="w-full flex items-start  gap-1 flex-col max-h-80 overflow-auto">
                             {soundFoldersWithSounds && soundFoldersWithSounds[soundFolder.id] && soundFoldersWithSounds[soundFolder.id].sounds.map(sound => {
 
-                                return <div key={sound.id}>
-                                    <p>{sound.name}</p>
-                                </div>
+                                return <button onClick={() => {
+                                    setSound(sound)
+                                }} className='flex px-2  w-full border-4 items-center justify-between py-1.5' key={sound.id}>
+                                    <p >{sound.name}</p>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation()
+                                        handlePlay(sound.soundUrl)
+                                    }}><PlayCircleIcon color="black" /></button>
+                                </button>
                             })}
                         </AccordionContent>
-                    </AccordionItem>
+                    </AccordionItem> : <Loading />}
                 </>
             })}
             {isLoadingSoundFolders && <Loading />}

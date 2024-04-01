@@ -27,3 +27,9 @@ export async function verifyJwt(
     return false;
   }
 }
+
+export function truncateString(str: string, length = 10) {
+  let newStr = str;
+  if (str.length > length) newStr = str.slice(0, length);
+  return newStr;
+}

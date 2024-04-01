@@ -38,8 +38,8 @@ export default function NewKeyboard({ params }: { params: { user: string } }) {
     }
     const renderKeyBoard = (design: DesignKeyboard | undefined) => {
 
-        return (< KeyboardWrapper className="!max-w-[450px] m-auto" showToolTip={keysSelected && keysSelected.length > 0} design={design}  >
-            <KeyboardKeyWrapper >
+        return (< KeyboardWrapper className="!max-w-[450px] m-auto" design={design}  >
+            <KeyboardKeyWrapper showToolTip={keysSelected && keysSelected.length > 0}  >
                 {keysSelected && keysSelected.length > 0 ?
                     keysSelected.map((key) => {
 
@@ -66,7 +66,7 @@ export default function NewKeyboard({ params }: { params: { user: string } }) {
         </KeyboardWrapper>)
     }
     useEffect(() => {
-        
+
         if (status === 'unauthenticated' || (status === 'authenticated' && data?.user.username !== params.user)) redirect('/')
     }, [data, status, params.user])
 
@@ -88,21 +88,21 @@ export default function NewKeyboard({ params }: { params: { user: string } }) {
                         </FormItem>
                     )}
                 />
-            <Button type="button" onClick={()=>{
-                setEnable(true)
-            }} variant={'minimal'}>Add keys</Button>
-                
+                <Button type="button" onClick={() => {
+                    setEnable(true)
+                }} variant={'minimal'}>Add keys</Button>
+
                 {!enable && renderKeyBoard(design)}
             </KeyboardCreateForm >
             <SheetSide open={enable} onOpenChange={(e) => {
-                    setEnable(e)
-                }} title="Choose your keys" displayName="Add keys" className="!max-w-full  bg-white/80" >
+                setEnable(e)
+            }} title="Choose your keys" displayName="Add keys" className="!max-w-full  bg-white/80" >
 
-                    {/* TODO: fetch user keys, allow user create key, fetch user sounds, allow user create sounds */}
+                {/* TODO: fetch user keys, allow user create key, fetch user sounds, allow user create sounds */}
 
-                    {enable && <DisplayKeys keysSelected={keysSelected} handleAddKeys={handleAddKeyButton} enable={enable} />}
-                    {enable && <div>{renderKeyBoard(design)}</div>}
-                </SheetSide>
+                {enable && <DisplayKeys keysSelected={keysSelected} handleAddKeys={handleAddKeyButton} enable={enable} />}
+                {enable && <div>{renderKeyBoard(design)}</div>}
+            </SheetSide>
 
         </div>}
         {status !== 'authenticated' && <Loading />}
