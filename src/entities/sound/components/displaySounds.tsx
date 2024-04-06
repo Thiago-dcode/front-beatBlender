@@ -8,17 +8,18 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Button } from '@/components/ui/button'
 import { useGetSoundFolder } from '../hooks/useGetSoundFolder'
 import { Sound, SoundFolderWithSounds } from '@/types'
 import { Loading } from '@/components/ui/loading'
 import { PlayCircleIcon } from 'lucide-react'
-function DisplaySounds({ enable, setSound = () => { },handlePlay = ()=>{} }: { enable: boolean, setSound?: (sound: Sound) => void , handlePlay?: (src:string)=>void}) {
+import usePlayAudio from '@/entities/key/hooks/usePlayAudio'
+function DisplaySounds({ enable, setSound = () => { } }: { enable: boolean, setSound?: (sound: Sound) => void }) {
+    const playAudio = usePlayAudio()
     const [id, setId] = useState<number>()
     const [soundFoldersWithSounds, setSoundFoldersWithSounds] = useState<{
         [key: number]: SoundFolderWithSounds
     }>()
-    const audio = new Audio();
+
     const [_enable, setEnable] = useState<boolean>(false)
     const { data: soundFolders, isLoading: isLoadingSoundFolders } = useGetSounds({ enable })
     const { data: SoundFolderWithSounds, isLoading } = useGetSoundFolder({
@@ -26,7 +27,7 @@ function DisplaySounds({ enable, setSound = () => { },handlePlay = ()=>{} }: { e
         id,
         stale: 60 * 60 * 24
     })
- 
+
     useEffect(() => {
 
         if (soundFolders && (!soundFoldersWithSounds || !soundFoldersWithSounds[soundFolders[0].id])) {
@@ -80,7 +81,7 @@ function DisplaySounds({ enable, setSound = () => { },handlePlay = ()=>{} }: { e
                                     <p >{sound.name}</p>
                                     <button onClick={(e) => {
                                         e.stopPropagation()
-                                        handlePlay(sound.soundUrl)
+                                        playAudio(sound.soundUrl)
                                     }}><PlayCircleIcon color="black" /></button>
                                 </button>
                             })}

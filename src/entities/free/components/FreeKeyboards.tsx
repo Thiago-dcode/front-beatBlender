@@ -8,19 +8,40 @@ import { Button } from '@/components/ui/button'
 
 export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: KeyboardType[], keyboard: KeyboardWithKeysAndDesign }) {
 
-    const [keyboardName, setKeyboardName] = useState<string>(keyboard?.name)
+    const [keyboardName, setKeyboardName] = useState<string>(keyboard.name)
     const [enable, setEnable] = useState<boolean>(false)
+    const [keyboardsMemo, setKeyboardsMemo] = useState<{ [key: string]: KeyboardWithKeysAndDesign }>(() => {
+
+
+        return {
+            [keyboard.name]: keyboard
+        }
+    })
     const [stale, setStale] = useState(1000 * 60 * 5)
-    const { data, isPending, error } = useGetFreeKeyboard({
+    const { data: _keyboard, isPending, error, refetch } = useGetFreeKeyboard({
         name: keyboardName,
-        enable,
-        initialData: keyboard ? { keyboard } : undefined,
+        enable: enable,
+        initialData: keyboard,
         stale
     })
 
     useEffect(() => {
         setEnable(false)
     }, [])
+    useEffect(() => {
+        if (keyboardsMemo[keyboardName] || !enable) return
+        refetch()
+    }, [keyboardName])
+
+    useEffect(() => {
+        if (!_keyboard) return
+        setKeyboardsMemo(prev => {
+
+            prev[_keyboard.name] = _keyboard
+            return prev
+        })
+
+    }, [_keyboard])
     if (error) {
         if (error instanceof CustomError) {
 
@@ -34,7 +55,7 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
 
             <div className="flex ">
                 <div>
-                    {data?.keyboard && <Keyboard enableEdit={true} keySize={KeySize.xl} enableKeyDown={true} keyboard={data.keyboard} />}
+                    {_keyboard && !isPending && <Keyboard enableEdit={true} keySize={KeySize.xl} enableKeyDown={true} keyboard={_keyboard} />}
                     {isPending && <p>Loading...</p>}
                 </div>
 
@@ -42,18 +63,19 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
 
 
             <div className='flex gap-2  items-center justify-start'>
-                {keyboards?.map(_keyboard => {
+                {keyboards?.map(kboard => {
 
                     return (
                         <Button style={
                             {
-                                background: _keyboard.id === data?.keyboard?.id ? 'black' : 'gray'
+                                background: kboard.id === _keyboard?.id ? 'black' : 'gray'
                             }
-                        } className=' text-xs px-2 py-1' size={"disable"} key={_keyboard.id} onClick={() => {
-                            setKeyboardName(_keyboard.name)
+                        } className=' text-xs px-2 py-1' size={"disable"} key={kboard.id} onClick={() => {
+                            console.log(kboard.name)
                             setEnable(true)
+                            setKeyboardName(kboard.name)
 
-                        }} > {_keyboard.name}</Button>
+                        }} > {kboard.name}</Button>
                     )
                 })}
             </div>

@@ -15,7 +15,7 @@ import { FormField, FormItem, FormLabel, FormMessage, FormControl, FormDescripti
 import { useKeyboardForm } from "@/entities/keyboard/hooks/useKeyboardForm"
 import DisplayKeys from "@/entities/key/components/displayKeys"
 import { Button } from "@/components/ui/button"
-import KeyButton from "@/entities/key/components/KeyButton"
+import KeyButton from "@/entities/key/components/KeyButtonComponent"
 import EditKeyForm from "@/entities/key/components/editKeyForm"
 import ContextMenuComponent from "@/components/ui/contextMenuComponent"
 

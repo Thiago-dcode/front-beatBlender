@@ -1,5 +1,5 @@
 'use client'
-import KeyButton from '@/entities/key/components/KeyButton'
+import KeyButton from '@/entities/key/components/KeyButtonComponent'
 import { KeySize, KeyboardWithKeysAndDesign } from '@/types'
 import '../style.css'
 import useSetSoundHandlers from '../hooks/useSetSoundHandlers'
@@ -7,18 +7,48 @@ import useResponsive from '@/lib/hooks/useResponsive'
 import KeyboardKeyWrapper from './keyboardKeyWrapper'
 import MetaLink from '@/components/metaLink'
 import KeyboardWrapper from './keyboardWrapper'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ContextMenuComponent from '@/components/ui/contextMenuComponent'
 import EditKeyForm from '@/entities/key/components/editKeyForm'
+import KeyButtonComponent from '@/entities/key/components/KeyButtonComponent'
 
 type Props = { keyboard: KeyboardWithKeysAndDesign, enableKeyDown?: boolean, keySize?: KeySize, displayName?: boolean, enableEdit?: boolean }
 export default function Keyboard({ keyboard, enableKeyDown = true, keySize = KeySize.xl, displayName = true, enableEdit = false }: Props) {
 
     const { isPhone } = useResponsive()
-    const { soundHandlers, setKeys, keys } = useSetSoundHandlers(undefined, enableKeyDown)
+    const [editOpen, setEditOpen] = useState<{ [key: string]: boolean }>(() => {
+        return keyboard.keys.reduce((acc: { [key: string]: boolean }, key) => {
+
+            acc[key.id.toString()] = false
+            return acc
+        }, {});
+    })
+    const { soundHandlers, setKeys, keys, setEnableKeyDown, enableKeyDown: enableKeyDownSoundHandler } = useSetSoundHandlers(undefined, enableKeyDown)
     useEffect(() => {
         setKeys(keyboard.keys)
+
     }, [keyboard, setKeys])
+
+
+    // useEffect(() => {
+
+    //     const booleanValues = Object.values(editOpen)
+
+    //     let hasOneOpen = false
+    //     for (let i = 0; i < booleanValues.length; i++) {
+
+    //         const element = booleanValues[i];
+    //         if (element) {
+    //             console.log('HASONEOPEN')
+    //             hasOneOpen = true
+    //             break;
+    //         }
+    //         hasOneOpen = false
+
+    //     }
+    //     setEnableKeyDown(!hasOneOpen)
+
+    // }, [editOpen])
     return (
 
         <>
@@ -41,9 +71,17 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
                         if (enableEdit) {
                             return (
 
-                                <ContextMenuComponent key={key.id} trigger={<KeyButton enableKeyDown={enableKeyDown} soundHandler={soundHandlers ? soundHandlers[key.key] : undefined} size={keySize} key={key.id} _key={key} />}>
+                                <ContextMenuComponent onOpenChange={(e) => {
+                                    
+                                   setEnableKeyDown(!e)
 
-                                    <EditKeyForm keyEntity={key} />
+
+
+
+
+                                }} key={key.id} trigger={<KeyButtonComponent enableKeyDown={enableKeyDown} soundHandler={soundHandlers ? soundHandlers[key.key] : undefined} size={keySize} key={key.id} _key={key} />}>
+
+                                    <EditKeyForm design={keyboard.design} keyEntity={key} />
 
                                 </ContextMenuComponent>
 
@@ -51,7 +89,7 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
                             )
 
                         }
-                        return <KeyButton enableKeyDown={enableKeyDown} soundHandler={soundHandlers ? soundHandlers[key.key] : undefined} size={keySize} key={key.id} _key={key} />
+                        return <KeyButtonComponent enableKeyDown={enableKeyDown} soundHandler={soundHandlers ? soundHandlers[key.key] : undefined} size={keySize} key={key.id} _key={key} />
 
 
 

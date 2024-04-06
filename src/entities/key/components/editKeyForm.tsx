@@ -4,8 +4,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import React, { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Color, Sound, key, keyWithSoundHandler } from "@/types";
-import { PlayIcon, PlayCircleIcon, Divide } from "lucide-react";
+import { Color, DesignKeyboard, Sound, key, keyWithSoundHandler } from "@/types";
+import { XCircle } from "lucide-react";
 import SeparationBar from "@/components/ui/separationBar";
 import DivWrapper from "@/components/wrapper/DivWrapper";
 import SoundHandler from "@/lib/core/soundHandler";
@@ -17,6 +17,11 @@ import {
 import DisplaySounds from "@/entities/sound/components/displaySounds";
 import { truncateString } from "@/lib/utils";
 import Info from "@/components/ui/Info";
+import KeyButton from "./keyButton";
+import usePlayAudio from "../hooks/usePlayAudio";
+import PlayButton from "@/entities/sound/components/playButton";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem } from "@radix-ui/react-select";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@radix-ui/react-dropdown-menu";
 // const allowedKeys = [
 //     'KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI', 'KeyJ', 'KeyK', 'KeyL', 'KeyM',
 //     'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR', 'KeyS', 'KeyT', 'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
@@ -28,13 +33,15 @@ import Info from "@/components/ui/Info";
 // ];
 type Props = {
     keyEntity?: key,
-    colors?: Color[]
+    design?: DesignKeyboard
 }
-export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props) {
-    const [audio, setAudio] = useState<HTMLAudioElement>(new Audio());
+export function EditKeyForm({ keyEntity = undefined, design = undefined }: Props) {
+    const playAudio = usePlayAudio()
     const [audioSrc, setAudioSrc] = useState('')
     const [keyPress, setKeyPress] = useState<string>();
     const [name, setName] = useState<string>();
+    const [bgColor, setBgColor] = useState<string>()
+    const [keyColor, setKeyColor] = useState<string>()
     const [displayName, setDisplayName] = useState<string>();
     const [audioFile, setAudioFile] = useState<File>()
     const [sound, setSound] = useState<Sound>()
@@ -45,19 +52,7 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
         e.preventDefault();
 
     };
-    const handlePlay = (src: string) => {
-        if (!(audio instanceof HTMLAudioElement)) return
-        audio.src = src
 
-
-        if (audio.paused) {
-            audio.play();
-        } else {
-            audio.currentTime = 0;
-            audio.play();
-        }
-
-    }
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         const notAllowedKeys = [
             "ArrowUp",
@@ -119,6 +114,12 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
 
 
     };
+    const handleSetDisplayName = (str: string) => {
+
+
+        setDisplayName(truncateString(str, 5))
+
+    }
     const handleSetSound = (_sound: Sound) => {
 
         setSound(_sound)
@@ -146,47 +147,43 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
     }
     useEffect(() => {
 
-        if (!keyPress) {
-
-            setDisplayName('')
-        }
-        if (keyPress && (!displayName || displayName === keyPress)) {
-            setDisplayName(keyPress)
-        }
+        handleSetDisplayName(keyPress || '')
 
     }, [keyPress])
 
     useEffect(() => {
+
         if (!keyEntity) return
         setAudioSrc(keyEntity.sound.soundUrl)
         setKeyPress(keyEntity.key)
         setDisplayName(keyEntity.displayName)
         setName(keyEntity.name)
+        console.log(keyEntity)
+        setBgColor(keyEntity.bgColor)
+        setKeyColor(keyEntity.keyColor)
 
     }, [keyEntity])
 
 
 
 
+
+
     return (
-        <div className="flex items-start justify-center w-full flex-col">
-            <form className="flex flex-col items-center justify-center w-full gap-2 " onKeyDown={(e) => {
+        <div className="flex items-start justify-center w-full flex-col ">
+            <form className="flex flex-col items-center justify-center w-full gap-2 text-white " onKeyDown={(e) => {
                 if (e.key === 'Enter') e.preventDefault();
                 return
             }} onSubmit={handleSubmit}>
                 {/* SOUND DIV */}
 
-                <h3 className="text-white text-xl">Edit key</h3>
+                <h3 className="text-white text-xl">{keyEntity ? "Edit key" : "Create key"}</h3>
                 <SeparationBar />
                 <DivWrapper className="flex-col" title={<Info iconColor="white" text='Choose the key audio' />}>
 
-                    {keyEntity && <DivWrapper className="gap-2 mb-2">
-                        <p>Your current sound:</p>
-                        <button onClick={() => {
-                            handlePlay(keyEntity.sound.soundUrl)
-                        }}><PlayCircleIcon color="white" /></button>
-
-                    </DivWrapper>}
+                    {keyEntity && <PlayButton handlePlay={() => {
+                        playAudio(keyEntity.sound.soundUrl)
+                    }} text="Your current audio:" />}
 
                     <DivWrapper className=" justify-between">
                         <p className="text-center w-full">
@@ -205,7 +202,7 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="z-[99]">
-                                    <DisplaySounds handlePlay={handlePlay} setSound={handleSetSound} enable={true} />
+                                    <DisplaySounds setSound={handleSetSound} enable={true} />
                                 </PopoverContent>
                             </Popover>
 
@@ -232,13 +229,13 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
                         </div>
 
                     </DivWrapper>
-                    {audio && (audioFile || sound) && audioSrc && <DivWrapper className="gap-2 mt-2">
-                        <p>Your audio selected:</p>
-                        <button onClick={() => {
-                            handlePlay(audioSrc)
-                        }}><PlayCircleIcon color="white" /></button>
-
-                    </DivWrapper>}
+                    {(audioFile || sound) && audioSrc && <DivWrapper className="mb-2" ><PlayButton className="" handlePlay={() => {
+                        playAudio(audioSrc)
+                    }} text="Your audio selected:" /><button onClick={() => {
+                        setAudioFile(undefined)
+                        setSound(undefined)
+                        setAudioSrc(keyEntity ? keyEntity.sound.soundUrl : '')
+                    }} className="pr-2"><Info text="remove audio selected" icon={<XCircle color="red" />} /></button></DivWrapper>}
                 </DivWrapper>
                 <SeparationBar />
 
@@ -260,7 +257,7 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
                 <DivWrapper className="gap-2 px-2" >
                     <DivWrapper className=" flex-col gap-2 items-center justify-center">
                         <Label htmlFor="key" className="flex items-center justify-between gap-2"><span>Key</span> <Info iconSize={15} iconColor="white" text='Click on the Key box, and them press a KEY from your keyboard to choose a key.' /></Label>
-                        <Input id="key" name="key" className="text-center "
+                        <Input id="key" name="key" className="text-center"
                             onChange={(e) => {
                                 e.target.value = "";
                             }}
@@ -299,15 +296,49 @@ export function EditKeyForm({ keyEntity = undefined, colors = undefined }: Props
                 </DivWrapper>
                 <SeparationBar />
 
+                {design &&
+                    <DivWrapper title={<Info iconColor="white" text={`Colors availables from your keyboard design: ${design.name} `} />} className="gap-9">
+                        {['background', 'text'].map(str => {
 
 
-                <KeyWrapper id="null" bgColor="white" size={4}>
+                            return <div key={str} className="flex flex-col items-center
+                                    justify-center">
+                                <p className="capitalize">{str}</p>
+                                <div className="gap-2  flex " >
+                                    {design.colors.map(color => <button onClick={(e) => {
+                                        switch (str) {
+                                            case 'background':
+                                                setBgColor(color.color)
+                                                return;
+                                            case 'text':
+                                                setKeyColor(color.color)
+                                                return;
 
-                    <button className="text-black capitalize">
-                        {displayName}
-                    </button>
+                                            default:
+                                                return;
+                                        }
+
+
+                                    }} style={{
+                                        background: color.color
+                                    }} className="h-8 w-8" key={color.color}></button>)}
+                                </div>
+                            </div>
+                        })}
+                    </DivWrapper>
+
+
+
+                }
+                <SeparationBar />
+                <KeyWrapper id="null" bgColor={bgColor} size={4}>
+                    {keyEntity && <KeyButton keyColor={keyColor} onClick={() => {
+                        playAudio(audioSrc)
+                    }} keyEntity={keyEntity} enableKeyDown={true} />}
                 </KeyWrapper>
+                <SeparationBar />
                 <Button type="submit" size={"lg"} variant={'green'}>Edit</Button>
+                
             </form>
         </div>
     );

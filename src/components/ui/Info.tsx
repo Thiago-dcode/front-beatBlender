@@ -1,14 +1,15 @@
 import { InfoIcon } from 'lucide-react'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { TooltipComponent } from './toolTipComponent'
 type Props = {
     text: string
     iconColor?: string,
     iconSize?: number,
+    icon?: ReactNode
 }
-export default function Info({ iconColor = 'black', iconSize = 20, text }: Props) {
+export default function Info({ iconColor = 'black', iconSize = 20, text, icon = <InfoIcon className='cursor-help' size={iconSize} color={iconColor} /> }: Props) {
     return (
-        <TooltipComponent  trigger={<InfoIcon className='cursor-help' size={iconSize} color={iconColor} />}>
+        <TooltipComponent trigger={icon}>
             <p className='max-w-sm text-center '>{text}</p>
         </TooltipComponent>
     )

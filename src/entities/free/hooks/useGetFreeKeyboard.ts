@@ -4,17 +4,22 @@ import { useQuery } from "@tanstack/react-query";
 import { getFreeKeyboard } from "../api";
 import { Data } from "../type";
 import { useAppQuery } from "@/lib/hooks/useQuery";
+import { useState } from "react";
+import { KeyboardWithKeysAndDesign } from "@/types";
+import { beatFetcher } from "@/lib/core/httpClient";
 export const useGetFreeKeyboard = (params: {
-  name: string | undefined;
-  initialData?: Data;
+  name: string;
+  initialData?: KeyboardWithKeysAndDesign;
   enable: boolean;
   stale: number;
 }) => {
-  return useAppQuery<Data>({
+
+
+  return useQuery<KeyboardWithKeysAndDesign>({
     queryKey: ["free-keyboard", params.name],
     initialData: params?.initialData,
     enabled: params.enable,
-    queryFn: () =>
-      params.name ? getFreeKeyboard(params.name) : new Promise(() => {}),
+    staleTime: params.stale,
+    queryFn: () => beatFetcher.get(`/free/keyboards/${params.name}`),
   });
 };

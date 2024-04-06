@@ -21,6 +21,7 @@ export function useAppQuery<TData>({
 }) {
   const query = useQuery<TData>({
     queryKey,
+
     initialData,
     refetchOnWindowFocus: false,
     enabled,

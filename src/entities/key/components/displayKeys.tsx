@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useGetKeys } from '../hooks/useGetKeys'
 import KeyboardKeyWrapper from '@/entities/keyboard/components/keyboardKeyWrapper'
-import KeyButton from './KeyButton'
+import KeyButton from './KeyButtonComponent'
 
 import { TooltipComponent } from '@/components/ui/toolTipComponent'
 import {

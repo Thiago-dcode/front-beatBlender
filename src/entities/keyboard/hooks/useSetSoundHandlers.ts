@@ -6,6 +6,8 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
   const [soundHandlers, setSoundHandlers] = useState<{
     [key: string]: SoundHandler;
   }>();
+  const [eventIsRunning, setEventIsRunning] = useState(false);
+  const [_enableKeyDown, setEnableKeyDown] = useState(enableKeyDown);
   const [_keys, setKeys] = useState(keys);
 
   const stopAll = useCallback(() => {
@@ -24,7 +26,7 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
       setSoundHandlers(undefined);
       return;
     }
-    
+
     const _soundHandlers = _keys.reduce<{
       [key: string]: SoundHandler;
     }>((acc, curr) => {
@@ -39,31 +41,48 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
   }, [_keys]);
 
   useEffect(() => {
-    if (!enableKeyDown || !soundHandlers) return;
+    if (!soundHandlers) return;
     const eventOnKeyDown = (e: globalThis.KeyboardEvent) => {
+      setEventIsRunning(true);
       const soundHandler = soundHandlers[e.key.toLowerCase()];
-      if (!soundHandler || !soundHandler.canplay) return;
+      if (!soundHandler || !soundHandler.isConnected) return;
 
       soundHandler.keyDown();
     };
     const eventOnKeyUp = (e: globalThis.KeyboardEvent) => {
+      setEventIsRunning(true);
       const soundHandler = soundHandlers[e.key.toLowerCase()];
-      if (!soundHandler) return;
-      if (!soundHandler || !soundHandler.canplay) return;
+     
+      if (!soundHandler || !soundHandler.isConnected) return;
       soundHandler.keyUp();
     };
 
-    document.addEventListener("keydown", eventOnKeyDown);
-    document.addEventListener("keyup", eventOnKeyUp);
+    if (!_enableKeyDown) {
+      document.removeEventListener("keydown", eventOnKeyDown);
+      document.removeEventListener("keyup", eventOnKeyUp);
+      stopAll();
+      setEventIsRunning(false);
+      return;
+    }
+    if (!eventIsRunning) {
+      document.addEventListener("keydown", eventOnKeyDown);
+      document.addEventListener("keyup", eventOnKeyUp);
+    }
     return () => {
       document.removeEventListener("keydown", eventOnKeyDown);
       document.removeEventListener("keyup", eventOnKeyUp);
       stopAll();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [soundHandlers, enableKeyDown]);
+  }, [soundHandlers, _enableKeyDown]);
 
-  return { soundHandlers, setKeys, keys: _keys };
+  return {
+    soundHandlers,
+    setKeys,
+    keys: _keys,
+    setEnableKeyDown,
+    enableKeyDown: _enableKeyDown,
+  };
 }
 
 export default useSetSoundHandlers;
