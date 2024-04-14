@@ -15,7 +15,7 @@ export const useGetFreeKeyboard = (params: {
 }) => {
 
 
-  return useQuery<KeyboardWithKeysAndDesign>({
+  return useAppQuery<KeyboardWithKeysAndDesign>({
     queryKey: ["free-keyboard", params.name],
     initialData: params?.initialData,
     enabled: params.enable,

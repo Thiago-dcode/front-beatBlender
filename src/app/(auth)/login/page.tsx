@@ -25,7 +25,7 @@ export default function Login() {
   const router = useRouter()
   const { timer, start } = UseTimer()
   const form = useLoginForm()
-  const { data, error } = useGetFreeKeyboard({
+  const { data:loginKeyboard, error } = useGetFreeKeyboard({
     name: 'login',
     enable: true,
     stale: 60 * 60 * 60
@@ -64,7 +64,7 @@ export default function Login() {
 
     <div className='-mt-20 flex items-center justify-center h-full w-full flex-col'>
       {!isSuccess && <>
-        {data?.keyboard && <Keyboard enableKeyDown={false} keyboard={data?.keyboard} keySize={KeySize.sm} displayName={false} />}
+        {loginKeyboard && <Keyboard enableKeyDown={false} keyboard={loginKeyboard} keySize={KeySize.sm} displayName={false} />}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className='w-full max-w-sm flex flex-col gap-4 text-white text-2xl m-4'>
 

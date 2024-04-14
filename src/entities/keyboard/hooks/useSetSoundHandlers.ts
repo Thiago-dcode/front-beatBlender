@@ -42,18 +42,19 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
 
   useEffect(() => {
     if (!soundHandlers) return;
+
     const eventOnKeyDown = (e: globalThis.KeyboardEvent) => {
       setEventIsRunning(true);
       const soundHandler = soundHandlers[e.key.toLowerCase()];
-      if (!soundHandler || !soundHandler.isConnected) return;
+      if (!soundHandler || !soundHandler.isConnected || !_enableKeyDown) return;
 
       soundHandler.keyDown();
     };
     const eventOnKeyUp = (e: globalThis.KeyboardEvent) => {
       setEventIsRunning(true);
       const soundHandler = soundHandlers[e.key.toLowerCase()];
-     
-      if (!soundHandler || !soundHandler.isConnected) return;
+
+      if (!soundHandler || !soundHandler.isConnected || !_enableKeyDown) return;
       soundHandler.keyUp();
     };
 
@@ -64,10 +65,10 @@ function useSetSoundHandlers(keys: key[] | undefined, enableKeyDown: boolean) {
       setEventIsRunning(false);
       return;
     }
-    if (!eventIsRunning) {
-      document.addEventListener("keydown", eventOnKeyDown);
-      document.addEventListener("keyup", eventOnKeyUp);
-    }
+
+    document.addEventListener("keydown", eventOnKeyDown);
+    document.addEventListener("keyup", eventOnKeyUp);
+
     return () => {
       document.removeEventListener("keydown", eventOnKeyDown);
       document.removeEventListener("keyup", eventOnKeyUp);

@@ -1,7 +1,5 @@
 "use client";
 
-import { beatFetcher } from "@/lib/core/httpClient";
-import { SoundFolder, SoundFolderWithSounds } from "@/types";
 import { QueryFunction, QueryKey, useQuery } from "@tanstack/react-query";
 import { HttpClientError } from "../exceptions/exceptions";
 import { signOut, useSession } from "next-auth/react";

@@ -4,17 +4,25 @@ import React, { ReactNode } from 'react'
 type Props = {
     className?: string,
     children: ReactNode,
-    title?: ReactNode
+    title?: ReactNode,
+    footer?: ReactNode,
+    bgColor?: string,
+
 }
-function DivWrapper({ className = '', children, title = undefined }: Props) {
+function DivWrapper({ className = '', children, title = undefined, footer = undefined, bgColor = '' }: Props) {
     return (
-        <div className={"text-white flex flex-col items-start justify-center gap-1 w-full"}>
-            <div className='pl-2'>
+        <div style={{
+            backgroundColor: bgColor
+        }} className={"text-white flex flex-col items-start justify-center gap-2 w-full p-0.5 rounded-md"}>
+            <>
                 {title}
-            </div>
-            <div className={cn('flex  items-center justify-center w-full ',className)}>
+            </>
+            <div className={cn('flex  items-center justify-center w-full ', className)}>
                 {children}
             </div>
+            <>
+                {footer}
+            </>
         </div>
     )
 }

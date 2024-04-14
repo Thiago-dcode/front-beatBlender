@@ -22,10 +22,10 @@ export default function Register() {
   const router = useRouter()
   const { timer, start } = UseTimer()
   const form = useRegisterForm()
-  const { data, error } = useGetFreeKeyboard({
+  const { data: registerKeyboard, error } = useGetFreeKeyboard({
     name: 'register',
     enable: true,
-    stale: 60 * 60 * 60
+    stale: 1000 * 60 * 60 * 60
   })
   const { errors } = form.formState
   // implement REACT QUERY
@@ -98,7 +98,7 @@ export default function Register() {
 
     <div className='-mt-20 flex items-center justify-center h-full w-full flex-col'>
       {!isSuccess && <>
-        {data?.keyboard && <Keyboard enableKeyDown={false} keyboard={data?.keyboard} keySize={KeySize.sm} displayName={false} />}
+        {registerKeyboard && <Keyboard enableKeyDown={false} keyboard={registerKeyboard} keySize={KeySize.sm} displayName={false} />}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className='w-full max-w-md flex flex-col gap-4 text-white text-2xl m-4'>
             <FormField control={form.control} name='email' render={({ field }) => {

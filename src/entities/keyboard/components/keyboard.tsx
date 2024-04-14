@@ -29,6 +29,10 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
 
     }, [keyboard, setKeys])
 
+    useEffect(() => {
+        console.log(enableKeyDown)
+    }, [keyboard])
+
 
     // useEffect(() => {
 
@@ -72,8 +76,8 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
                             return (
 
                                 <ContextMenuComponent onOpenChange={(e) => {
-                                    
-                                   setEnableKeyDown(!e)
+
+                                    setEnableKeyDown(!e)
 
 
 
@@ -81,7 +85,7 @@ export default function Keyboard({ keyboard, enableKeyDown = true, keySize = Key
 
                                 }} key={key.id} trigger={<KeyButtonComponent enableKeyDown={enableKeyDown} soundHandler={soundHandlers ? soundHandlers[key.key] : undefined} size={keySize} key={key.id} _key={key} />}>
 
-                                    <EditKeyForm design={keyboard.design} keyEntity={key} />
+                                    <EditKeyForm order={key.order} design={keyboard.design} keyEntity={key} />
 
                                 </ContextMenuComponent>
 

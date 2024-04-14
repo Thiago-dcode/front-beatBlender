@@ -1,11 +1,12 @@
 import SoundHandler from "./lib/core/soundHandler";
 
 export type Method = "POST" | "GET" | "PATCH" | "DELETE" | "PUT" | "OPTIONS";
-export type body = { [key: string]: any };
+export type body = { [key: string]: any } |FormData;
 export interface RequestBody {
   options: {
     method: Method;
     resource: string;
+    isFormData:boolean;
   };
   data: body | undefined;
   requestOptions: RequestInit | undefined;
@@ -38,6 +39,7 @@ export interface key {
   createdAt: string;
   updatedAt: string;
   userId: number;
+  order: number;
   desig_keyId: number | null;
   category: category;
   soundId: number | null;
@@ -98,10 +100,9 @@ export interface SoundFolder {
   path: string;
   userId: number;
   is_default: boolean;
-  
 }
 export interface SoundFolderWithSounds extends SoundFolder {
-  sounds: Sound[]
+  sounds: Sound[];
 }
 export interface category {
   id: number;
@@ -138,7 +139,6 @@ export interface AccessToken {
   accessToken: string;
 }
 
-
 export interface keyWithSoundHandler extends key {
-  soundHandler: SoundHandler
+  soundHandler: SoundHandler;
 }

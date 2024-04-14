@@ -10,17 +10,18 @@ type Props = {
     onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
     enableKeyDown?: boolean,
     size?: number,
+    displayName?: string,
     keyColor?: string
 
 
 
 }
-function KeyButton({ keyEntity, keyColor = '', onClick = () => { }, enableKeyDown = false, size = KeySize.xl }: Props) {
+function KeyButton({ keyEntity, keyColor = '', onClick = () => { }, enableKeyDown = false, size = KeySize.xl, displayName = '' }: Props) {
     return (
         <>
             {size >= KeySize.md && <Effects effects={keyEntity.effects} />}
-            <Button style={{
-                color:keyColor || keyEntity.keyColor || '',
+            <Button type="button" style={{
+                color: keyColor || keyEntity.keyColor || '',
             }} variant={'disable'} id={`key-${keyEntity.key}`} className='key-button' onClick={(e) => {
                 onClick(e)
             }} key={keyEntity.id}>
@@ -29,7 +30,7 @@ function KeyButton({ keyEntity, keyColor = '', onClick = () => { }, enableKeyDow
                 {(keyEntity.displayName.toLowerCase() !== keyEntity.key.toLowerCase()) && enableKeyDown ? <div className='flex'>
                     {keyEntity.displayName.toUpperCase()}
                     <span className='text-[0.5rem]'>{`(${keyEntity.key})`}</span>
-                </div> : keyEntity.displayName.toUpperCase()}
+                </div> : displayName.toUpperCase() || keyEntity.displayName.toUpperCase()}
 
 
             </Button>

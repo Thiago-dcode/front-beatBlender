@@ -2,7 +2,7 @@ import { InfoIcon } from 'lucide-react'
 import React, { ReactNode } from 'react'
 import { TooltipComponent } from './toolTipComponent'
 type Props = {
-    text: string
+    text: ReactNode
     iconColor?: string,
     iconSize?: number,
     icon?: ReactNode

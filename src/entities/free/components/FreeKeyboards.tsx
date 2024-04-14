@@ -71,8 +71,7 @@ export default function FreeKeyboards({ keyboards, keyboard }: { keyboards: Keyb
                                 background: kboard.id === _keyboard?.id ? 'black' : 'gray'
                             }
                         } className=' text-xs px-2 py-1' size={"disable"} key={kboard.id} onClick={() => {
-                            console.log(kboard.name)
-                            setEnable(true)
+                          setEnable(true)
                             setKeyboardName(kboard.name)
 
                         }} > {kboard.name}</Button>

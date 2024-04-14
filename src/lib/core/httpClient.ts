@@ -1,6 +1,7 @@
 import { json } from "stream/consumers";
 import { HttpClientError } from "../exceptions/exceptions";
 import { Method, RequestBody, body } from "@/types";
+import { formDataToJson } from "../utils";
 
 class HttpClient {
   private static defaultHeaders: HeadersInit = {
@@ -44,9 +45,12 @@ class HttpClient {
 
         const method = this.baseUrl ? _method : "POST";
         const body = this.baseUrl
-          ? JSON.stringify(_body)
+          ? _body instanceof FormData
+            ? _body
+            : JSON.stringify(_body)
           : this.getBody(resource, _method, _body, options);
-      
+
+          console.log('body',body)
         const res = await fetch(url, {
           ...this.defaultOptions,
           ...options,
@@ -94,32 +98,26 @@ class HttpClient {
   private static getBody(
     resource: string,
     method: Method,
-    body: { [key: string]: any } | undefined = undefined,
+    body: { [key: string]: any } | FormData | undefined = undefined,
     options: RequestInit | undefined = undefined
   ) {
     const _body: RequestBody = {
       options: {
         method,
         resource,
+        isFormData: body instanceof FormData,
       },
-      data: body,
+      data: body instanceof FormData ? formDataToJson(body) : body,
       requestOptions: options,
     };
 
+   
     return JSON.stringify(_body);
   }
-  static post(
-    resource: string,
-    body: { [key: string]: any },
-    options: RequestInit = {}
-  ) {
+  static post(resource: string, body: body, options: RequestInit = {}) {
     return this.fetch(resource, "POST", body, options);
   }
-  static patch(
-    resource: string,
-    body: { [key: string]: any },
-    options: RequestInit = {}
-  ) {
+  static patch(resource: string, body: body, options: RequestInit = {}) {
     return this.fetch(resource, "POST", body, options);
   }
 }

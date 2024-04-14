@@ -70,7 +70,7 @@ function DisplaySounds({ enable, setSound = () => { } }: { enable: boolean, setS
 
 
                 return <>
-                    {!isLoading ? <AccordionItem className='capitalize w-full' value={soundFolder.id.toString()}>
+                    {!isLoading ? <AccordionItem key={soundFolder.id} className='capitalize w-full' value={soundFolder.id.toString()}>
                         <AccordionTrigger>{soundFolder.name}</AccordionTrigger>
                         <AccordionContent className="w-full flex items-start  gap-1 flex-col max-h-80 overflow-auto">
                             {soundFoldersWithSounds && soundFoldersWithSounds[soundFolder.id] && soundFoldersWithSounds[soundFolder.id].sounds.map(sound => {

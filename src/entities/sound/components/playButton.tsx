@@ -14,7 +14,7 @@ function PlayButton({ handlePlay = () => { }, text, className = '' }: Props) {
     return (
         <DivWrapper className={cn("gap-2", className)}>
             <p>{text}</p>
-            <button onClick={(e) => {
+            <button type="button" onClick={(e) => {
                 handlePlay(e)
 
             }}><PlayCircleIcon color="white" /></button>
